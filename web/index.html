@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07131f">
+  <title>智萃空间 · 数字孪生</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {"imports":{"three":"./lib/three.module.js"}}
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#site" aria-label="智萃空间首页">
+        <span class="brand-mark"><i></i><i></i><i></i></span>
+        <span><b>智萃空间</b><small>DIGITAL TWIN</small></span>
+      </a>
+      <div class="top-divider"></div>
+      <nav class="breadcrumb" aria-label="当前位置">
+        <button data-view="site">上海市</button><span>/</span>
+        <button data-view="site">临港新片区</button><span>/</span>
+        <button data-view="site">智萃科技中心</button><span>/</span>
+        <button data-view="building">6号楼</button><span>/</span>
+        <strong>7楼</strong>
+      </nav>
+      <div class="top-spacer"></div>
+      <div class="connection"><span class="pulse"></span><span id="connection-label">演示数据已连接</span></div>
+      <div class="top-date"><span id="clock">09:41:08</span><small>2026.09.24 周四</small></div>
+      <button class="avatar" title="演示账户">知</button>
+    </header>
+
+    <aside class="left-rail">
+      <div class="rail-caption">工作台</div>
+      <button class="rail-item active" data-section="space"><span class="rail-icon">⌘</span><span>空间总览</span></button>
+      <button class="rail-item" data-section="assets"><span class="rail-icon">▦</span><span>资产设备</span><em>07</em></button>
+      <button class="rail-item" data-section="alerts"><span class="rail-icon">◉</span><span>告警中心</span><em class="warn-dot">1</em></button>
+      <div class="rail-bottom"><div class="rail-caption">站点</div><div class="site-badge"><span class="site-pin">⌖</span><span>临港<br><b>智萃中心</b></span></div><div class="rail-version">空间引擎 <span>v0.1.0</span></div></div>
+    </aside>
+
+    <main class="workspace">
+      <section class="workspace-heading">
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span>ZHICUI · LINGANG CAMPUS</div>
+          <h1 id="page-title">6号楼 <span>·</span> 7楼空间</h1>
+          <p id="page-subtitle">从园区到房间，掌握空间与设备运行状态</p>
+        </div>
+        <div class="heading-actions">
+          <span class="demo-badge"><span></span>演示数据</span>
+          <button class="outline-btn" id="refresh-btn"><span class="refresh-icon">↻</span>刷新状态</button>
+          <button class="primary-btn" id="focus-btn">⌖ <span>定位 6 号楼</span></button>
+        </div>
+      </section>
+
+      <section class="scene-frame" aria-label="数字孪生场景">
+        <div id="scene-root"></div>
+        <div class="scene-vignette"></div>
+        <div class="scene-topline">
+          <div class="scene-context"><span class="context-dot"></span><span id="scene-context-label">园区实景 · 6号楼定位</span></div>
+          <div class="scene-tools">
+            <button class="tool-chip active" data-layer="spaces">空间</button>
+            <button class="tool-chip active" data-layer="equipment">设备</button>
+            <button class="tool-chip active" data-layer="alerts">告警</button>
+            <span class="tool-divider"></span>
+            <div class="view-toggle"><button data-mode="2d">2D</button><button class="selected" data-mode="3d">3D</button></div>
+            <button class="icon-button" id="reset-camera" aria-label="重置视角">⟲</button>
+          </div>
+        </div>
+        <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>121.912090°E&nbsp; 30.867637°N</small></div></div>
+        <div class="scene-legend"><span><i class="legend-room"></i>空间</span><span><i class="legend-equipment"></i>设备</span><span><i class="legend-alert"></i>异常</span></div>
+        <div class="scene-zoom"><button id="zoom-in" aria-label="放大">＋</button><span></span><button id="zoom-out" aria-label="缩小">−</button></div>
+        <div class="scene-footnote"><span>底图来源：天地图</span><span>楼栋/楼层为示意模型</span></div>
+        <div class="map-loading" id="map-loading"><span class="loading-ring"></span><span>正在载入园区实景</span></div>
+        <div class="tooltip" id="scene-tooltip"></div>
+      </section>
+
+      <section class="bottom-strip">
+        <div class="floor-browser">
+          <div class="floor-browser-head"><span>楼层导航</span><small>6号楼 <b>·</b> 9F</small></div>
+          <div class="floor-buttons" id="floor-buttons"></div>
+        </div>
+        <div class="bottom-stat"><div class="stat-icon cyan">▦</div><div><small>空间数量</small><b id="stat-rooms">05 <em>间</em></b></div></div>
+        <div class="bottom-stat"><div class="stat-icon blue">⌖</div><div><small>设备总数</small><b id="stat-equipment">07 <em>台</em></b></div></div>
+        <div class="bottom-stat"><div class="stat-icon amber">◌</div><div><small>当前在线</small><b id="stat-online">06 <em>/ 07</em></b></div></div>
+        <div class="bottom-stat occupancy"><div class="stat-icon green">♙</div><div><small>实时在场</small><b id="stat-occupancy">44 <em>人</em></b></div><div class="occupancy-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </section>
+    </main>
+
+    <aside class="right-panel">
+      <div class="panel-scroll">
+        <section class="panel-section selected-object">
+          <div class="section-head"><div><span class="section-kicker">CURRENT SELECTION</span><h2 id="detail-title">6号楼 · 7楼</h2></div><button class="more-btn" aria-label="更多">···</button></div>
+          <div class="object-meta"><span class="object-type"><i></i><span id="detail-type">楼层空间</span></span><span class="object-id" id="detail-id">BUILDING-06 / F07</span></div>
+          <div class="selected-summary"><div><small>建筑面积</small><b>1,280 <em>m²</em></b></div><div><small>空间利用率</small><b>86 <em>%</em></b></div><div><small>运行状态</small><b class="status-ok"><i></i>正常</b></div></div>
+          <button class="text-link" id="open-floorplan">查看楼层详情 <span>↗</span></button>
+        </section>
+
+        <section class="panel-section energy-section">
+          <div class="section-head"><div><span class="section-kicker">ENERGY OVERVIEW</span><h2>能耗概览</h2></div><button class="period-select">今日⌄</button></div>
+          <div class="energy-value"><b id="energy-value">18.6</b><span>kWh</span><em class="delta positive">↓ 4.2%</em></div>
+          <div class="chart-wrap"><div class="chart-y"><span>24</span><span>18</span><span>12</span><span>6</span></div><svg id="energy-chart" viewBox="0 0 300 92" preserveAspectRatio="none" role="img" aria-label="今日能耗趋势"></svg></div>
+          <div class="chart-x"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+          <div class="energy-foot"><span><i></i>今日用电</span><span>较昨日 <b>−0.8 kWh</b></span></div>
+        </section>
+
+        <section class="panel-section equipment-section">
+          <div class="section-head"><div><span class="section-kicker">ASSET STATUS</span><h2>设备状态 <small id="equipment-count">07</small></h2></div><button class="text-link compact" data-section="assets">查看全部 <span>→</span></button></div>
+          <div class="device-list" id="device-list"></div>
+        </section>
+
+        <section class="panel-section alerts-section">
+          <div class="section-head"><div><span class="section-kicker">ATTENTION</span><h2>告警与事件 <small class="alert-count" id="alert-count">01</small></h2></div><button class="text-link compact" data-section="alerts">全部 <span>→</span></button></div>
+          <div class="alert-list" id="alert-list"></div>
+        </section>
+      </div>
+      <footer class="panel-footer"><span class="footer-live"><i></i>实时状态</span><span>更新时间 <b id="updated-at">09:41:08</b></span></footer>
+    </aside>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

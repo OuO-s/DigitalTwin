@@ -1,0 +1,30 @@
+{
+  "id": "zhicui-lingang",
+  "name": "智萃科技中心",
+  "displayName": "临港·智萃科技中心",
+  "address": "上海市浦东新区海基六路99弄1-52号",
+  "center": {
+    "longitude": 121.91209,
+    "latitude": 30.867637,
+    "crs": "WGS84"
+  },
+  "extentMeters": 800,
+  "mapCenterOffsetMeters": [-100, 0],
+  "map": {
+    "provider": "天地图",
+    "zoom": 18,
+    "image": "/assets/maps/site.png",
+    "metadata": "/assets/maps/site.json"
+  },
+  "buildings": [
+    {
+      "id": "building-06",
+      "name": "6号楼",
+      "floorCount": 9,
+      "centerOffsetMeters": [0, 0],
+      "footprintMeters": [42, 26],
+      "modelAccuracy": "示意模型，非测绘轮廓",
+      "floors": [7]
+    }
+  ]
+}

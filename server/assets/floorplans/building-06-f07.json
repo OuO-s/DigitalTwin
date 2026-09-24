@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "id": "building-06-f07",
+    "siteId": "zhicui-lingang",
+    "buildingId": "building-06",
+    "floorId": "f07",
+    "name": "6号楼 7楼",
+    "unit": "mm",
+    "source": "demo-schematic",
+    "storeyHeight": 3600,
+    "disclaimer": "示意布局与模拟设备，仅用于首版演示，不代表真实房间尺寸或设备位置。"
+  },
+  "bounds": {"width": 24000, "depth": 16000},
+  "rooms": [
+    {"id":"room-701","name":"开放办公区","type":"office","polygon":[[0,0],[14000,0],[14000,9500],[0,9500]],"areaM2":133,"occupancy":18},
+    {"id":"room-702","name":"会议室 A","type":"meeting","polygon":[[14000,0],[24000,0],[24000,6000],[14000,6000]],"areaM2":60,"occupancy":8},
+    {"id":"room-703","name":"会议室 B","type":"meeting","polygon":[[14000,6000],[24000,6000],[24000,11000],[14000,11000]],"areaM2":50,"occupancy":6},
+    {"id":"room-704","name":"研发实验室","type":"lab","polygon":[[0,9500],[14000,9500],[14000,16000],[0,16000]],"areaM2":91,"occupancy":10},
+    {"id":"room-705","name":"设备与茶水区","type":"utility","polygon":[[14000,11000],[24000,11000],[24000,16000],[14000,16000]],"areaM2":50,"occupancy":2}
+  ],
+  "walls": [
+    {"id":"wall-north","start":[0,16000],"end":[24000,16000],"thickness":180,"height":3300},
+    {"id":"wall-east","start":[24000,0],"end":[24000,16000],"thickness":180,"height":3300},
+    {"id":"wall-south","start":[0,0],"end":[24000,0],"thickness":180,"height":3300},
+    {"id":"wall-west","start":[0,0],"end":[0,16000],"thickness":180,"height":3300}
+  ],
+  "equipments": [
+    {"id":"eq-hvac-01","label":"空调 01","category":"hvac","roomId":"room-701","position":[3500,7600,0],"status":"online","reading":23.4,"unit":"°C"},
+    {"id":"eq-hvac-02","label":"空调 02","category":"hvac","roomId":"room-701","position":[10800,7600,0],"status":"online","reading":23.1,"unit":"°C"},
+    {"id":"eq-light-01","label":"照明回路 01","category":"lighting","roomId":"room-701","position":[7000,3500,0],"status":"online","reading":76,"unit":"%"},
+    {"id":"eq-sensor-01","label":"环境传感器 01","category":"sensor","roomId":"room-702","position":[19000,4000,0],"status":"online","reading":24.1,"unit":"°C"},
+    {"id":"eq-sensor-02","label":"环境传感器 02","category":"sensor","roomId":"room-703","position":[19000,8500,0],"status":"warning","reading":69,"unit":"%RH"},
+    {"id":"eq-power-01","label":"配电箱 01","category":"power","roomId":"room-704","position":[3000,12500,0],"status":"online","reading":18.6,"unit":"kW"},
+    {"id":"eq-access-01","label":"门禁 01","category":"access","roomId":"room-705","position":[15600,13700,0],"status":"online","reading":"已闭锁","unit":""}
+  ]
+}
+
