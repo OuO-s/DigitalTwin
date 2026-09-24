@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "id": "zhicui-campus-layout",
+    "siteId": "zhicui-lingang",
+    "source": "schematic-redraw",
+    "unit": "m",
+    "disclaimer": "园区道路、绿地及相邻楼宇为重新绘制的演示示意。6号楼按园区锚点向西约100米布置，需用现场总图复核。"
+  },
+  "bounds": {"width": 270, "depth": 190},
+  "buildings": [
+    {"id":"building-01","name":"1号楼","position":[-154,-52],"footprint":[34,22],"floors":8,"usage":"研发办公"},
+    {"id":"building-02","name":"2号楼","position":[-100,-64],"footprint":[38,24],"floors":9,"usage":"创新研发"},
+    {"id":"building-03","name":"3号楼","position":[-46,-48],"footprint":[34,22],"floors":6,"usage":"研发办公"},
+    {"id":"building-04","name":"4号楼","position":[-162,6],"footprint":[34,22],"floors":7,"usage":"产业服务"},
+    {"id":"building-05","name":"5号楼","position":[-48,8],"footprint":[38,24],"floors":8,"usage":"创新研发"},
+    {"id":"building-06","name":"6号楼","position":[-100,0],"footprint":[42,26],"floors":9,"usage":"智萃科技中心 · 7楼"},
+    {"id":"building-07","name":"7号楼","position":[-100,54],"footprint":[36,23],"floors":7,"usage":"研发办公"}
+  ],
+  "roads": [
+    {"id":"road-west-east","axis":"x","at":-31,"length":252,"width":11,"class":"main"},
+    {"id":"road-north-south","axis":"z","at":-211,"length":176,"width":10,"class":"main"},
+    {"id":"road-center","axis":"z","at":-67,"length":164,"width":7,"class":"campus"},
+    {"id":"road-east","axis":"z","at":10,"length":164,"width":7,"class":"campus"},
+    {"id":"road-west","axis":"z","at":-194,"length":164,"width":7,"class":"campus"}
+  ],
+  "paths": [
+    {"id":"walk-north","position":[-100,-31],"size":[190,5]},
+    {"id":"walk-south","position":[-100,35],"size":[190,5]},
+    {"id":"walk-spine","position":[-100,2],"size":[5,116]}
+  ],
+  "landscape": [
+    {"id":"garden-center","position":[-100,2],"size":[62,30],"kind":"garden"},
+    {"id":"garden-east","position":[-14,4],"size":[28,32],"kind":"garden"},
+    {"id":"garden-north","position":[-101,-92],"size":[100,18],"kind":"green"},
+    {"id":"garden-south","position":[-102,83],"size":[112,20],"kind":"green"}
+  ],
+  "surroundings": [
+    {"id":"context-north","position":[-73,-128],"size":[80,22],"height":8},
+    {"id":"context-west","position":[-226,18],"size":[20,80],"height":6},
+    {"id":"context-east","position":[-5,18],"size":[24,76],"height":7},
+    {"id":"context-south","position":[-113,112],"size":[118,24],"height":5}
+  ]
+}
+

@@ -58,15 +58,24 @@ function renderSummary(summary) {
   $("#stat-occupancy").innerHTML = `${String(summary.occupancy).padStart(2, "0")} <em>人</em>`;
   $("#energy-value").textContent = Number(summary.energyKwh).toFixed(1);
   $("#alert-count").textContent = String(summary.warningCount).padStart(2, "0");
-  renderChart();
+  renderChart(store.state.timeWindow);
   renderAlerts(summary.alerts);
 }
 
-function renderChart() {
+function renderChart(windowName = store.state.timeWindow) {
   const svg = $("#energy-chart");
-  const values = [8, 12, 9, 14, 11, 15, 12, 17, 14, 21, 16, 19, 14, 17, 12, 18, 15, 22, 18, 20, 15, 18, 13, 17];
-  const points = values.map((value, index) => `${(index / (values.length - 1)) * 300},${86 - value * 3.45}`).join(" ");
-  svg.innerHTML = `<defs><linearGradient id="energy-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#42d5cc" stop-opacity=".24"/><stop offset="1" stop-color="#42d5cc" stop-opacity="0"/></linearGradient></defs><polygon points="0,92 ${points} 300,92" fill="url(#energy-fill)"/><polyline points="${points}" fill="none" stroke="#48d4cc" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="221" cy="${86 - values[17] * 3.45}" r="3.4" fill="#c5fff5" stroke="#36bfb8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+  const series = {
+    today: [8,12,9,14,11,15,12,17,14,21,16,19,14,17,12,18,15,22,18,20,15,18,13,17],
+    week: [7,10,12,11,15,13,18,16,20,17,15,19,22,18,21,16,14,18,20,24,21,19,16,18],
+    month: [10,13,11,16,15,19,17,14,18,21,20,16,19,23,18,22,17,15,20,24,19,22,18,21],
+  };
+  const values = series[windowName] ?? series.today;
+  const axisLabels = windowName === "week" ? ["周一", "周二", "周三", "周四", "周五"] : windowName === "month" ? ["01日", "08日", "15日", "22日", "30日"] : ["00:00", "06:00", "12:00", "18:00", "24:00"];
+  document.querySelectorAll(".chart-x span").forEach((node, index) => { node.textContent = axisLabels[index]; });
+  const max = Math.max(...values);
+  const points = values.map((value, index) => `${(index / (values.length - 1)) * 300},${86 - value / max * 72}`).join(" ");
+  const peak = values.indexOf(max);
+  svg.innerHTML = `<defs><linearGradient id="energy-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#42d5cc" stop-opacity=".28"/><stop offset="1" stop-color="#42d5cc" stop-opacity="0"/></linearGradient></defs><polygon points="0,92 ${points} 300,92" fill="url(#energy-fill)"/><polyline points="${points}" fill="none" stroke="#48d4cc" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="${(peak / (values.length - 1)) * 300}" cy="${86 - max / max * 72}" r="3.6" fill="#c5fff5" stroke="#36bfb8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
 }
 
 function renderDevices() {
@@ -87,7 +96,15 @@ function renderDevices() {
 }
 
 function renderAlerts(alerts = []) {
-  $("#alert-list").innerHTML = alerts.map(item => `<div class="alert-row ${item.level === "info" ? "info" : ""}"><span class="alert-marker">${item.level === "info" ? "i" : "!"}</span><span class="alert-copy"><b>${item.title}</b><small>${item.detail}</small></span><span class="alert-time">${item.time}</span></div>`).join("");
+  const host = $("#alert-list");
+  host.innerHTML = alerts.map((item, index) => `<button class="alert-row ${item.level === "info" ? "info" : ""}" data-alert-target="${item.target ?? (index === 0 ? "room-703" : "building-06")}" data-alert-kind="${item.targetKind ?? (index === 0 ? "room" : "building")}"><span class="alert-marker">${item.level === "info" ? "i" : "!"}</span><span class="alert-copy"><b>${item.title}</b><small>${item.detail}</small></span><span class="alert-time">${item.time}</span></button>`).join("");
+  host.querySelectorAll("[data-alert-target]").forEach(button => button.addEventListener("click", () => {
+    const kind = button.dataset.alertKind;
+    const id = button.dataset.alertTarget;
+    store.setView(kind === "room" ? "floor" : "building");
+    selectObject(kind === "room" ? { kind, id } : { kind: "building", id, title: "6号楼" });
+    renderPage();
+  }));
 }
 
 function renderFloorButtons(site) {
@@ -103,13 +120,13 @@ function renderFloorButtons(site) {
 function renderPage() {
   const view = store.state.view;
   const titles = {
-    site: ["临港园区 · 空间总览", "上海市浦东新区临港新片区 · 智萃科技中心"],
+    site: ["智萃科技中心 · 园区总览", "海基六路99弄 · 园区空间模型示意"],
     building: ["6号楼 · 建筑空间", "智萃科技中心 · 楼层结构与运行状态"],
     floor: ["6号楼 · 7楼空间", "从园区到房间，掌握空间与设备运行状态"],
   };
   $("#page-title").textContent = titles[view][0];
   $("#page-subtitle").textContent = titles[view][1];
-  $("#scene-context-label").textContent = view === "site" ? "园区实景 · 6号楼定位" : view === "building" ? "建筑结构 · 楼层导航" : "7楼示意平面 · 房间与设备";
+  $("#scene-context-label").textContent = view === "site" ? "园区示意重绘 · 6号楼居中" : view === "building" ? "6号楼 · 建筑结构示意" : "7楼示意平面 · 房间与设备";
   $("#open-floorplan").classList.toggle("hidden-link", view === "floor");
   renderSelection();
 }
@@ -149,6 +166,17 @@ function wireUi() {
   $("#focus-btn").addEventListener("click", () => { store.setView("building"); renderPage(); scene.resetCamera(); });
   $("#open-floorplan").addEventListener("click", () => { store.setView("floor"); renderPage(); });
   $("#reset-camera").addEventListener("click", () => scene.resetCamera());
+  const windows = ["today", "week", "month"];
+  const windowLabels = { today: "今日⌄", week: "近7日⌄", month: "近30日⌄" };
+  $("#time-window").addEventListener("click", () => {
+    const index = windows.indexOf(store.state.timeWindow);
+    const next = windows[(index + 1) % windows.length];
+    store.update({ timeWindow: next });
+    $("#time-window").textContent = windowLabels[next];
+    renderChart(next);
+    const totals = { today: "18.6", week: "132.4", month: "548.9" };
+    $("#energy-value").textContent = totals[next];
+  });
   $("#zoom-in").addEventListener("click", () => scene.setZoom(1));
   $("#zoom-out").addEventListener("click", () => scene.setZoom(-1));
   $("#refresh-btn").addEventListener("click", async () => {
@@ -159,10 +187,10 @@ function wireUi() {
 
 async function start() {
   try {
-    const [site, floorplan, summary] = await Promise.all([
-      api("/api/v1/site"), api("/api/v1/floorplans/f07"), api("/api/v1/summary"),
+    const [site, campusLayout, floorplan, summary] = await Promise.all([
+      api("/api/v1/site"), api("/api/v1/campus-layout"), api("/api/v1/floorplans/f07"), api("/api/v1/summary"),
     ]);
-    store.update({ site, floorplan, summary });
+    store.update({ site, campusLayout, floorplan, summary });
     renderFloorButtons(site);
     renderSummary(summary);
     renderDevices();

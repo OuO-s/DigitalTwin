@@ -62,16 +62,16 @@
             <button class="tool-chip active" data-layer="spaces">空间</button>
             <button class="tool-chip active" data-layer="equipment">设备</button>
             <button class="tool-chip active" data-layer="alerts">告警</button>
+            <button class="tool-chip" data-layer="heat">热力</button>
             <span class="tool-divider"></span>
             <div class="view-toggle"><button data-mode="2d">2D</button><button class="selected" data-mode="3d">3D</button></div>
             <button class="icon-button" id="reset-camera" aria-label="重置视角">⟲</button>
           </div>
         </div>
-        <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>121.912090°E&nbsp; 30.867637°N</small></div></div>
-        <div class="scene-legend"><span><i class="legend-room"></i>空间</span><span><i class="legend-equipment"></i>设备</span><span><i class="legend-alert"></i>异常</span></div>
+        <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>相对园区锚点向西约100m</small></div></div>
+        <div class="scene-legend"><span><i class="legend-room"></i>空间</span><span><i class="legend-equipment"></i>设备</span><span><i class="legend-alert"></i>异常</span><span><i class="legend-heat"></i>热度</span></div>
         <div class="scene-zoom"><button id="zoom-in" aria-label="放大">＋</button><span></span><button id="zoom-out" aria-label="缩小">−</button></div>
-        <div class="scene-footnote"><span>底图来源：天地图</span><span>楼栋/楼层为示意模型</span></div>
-        <div class="map-loading" id="map-loading"><span class="loading-ring"></span><span>正在载入园区实景</span></div>
+        <div class="scene-footnote"><span>场景由模型重新绘制</span><span>楼栋位置与轮廓待现场总图校准</span></div>
         <div class="tooltip" id="scene-tooltip"></div>
       </section>
 
@@ -97,7 +97,7 @@
         </section>
 
         <section class="panel-section energy-section">
-          <div class="section-head"><div><span class="section-kicker">ENERGY OVERVIEW</span><h2>能耗概览</h2></div><button class="period-select">今日⌄</button></div>
+          <div class="section-head"><div><span class="section-kicker">ENERGY OVERVIEW</span><h2>能耗概览</h2></div><button class="period-select" id="time-window">今日⌄</button></div>
           <div class="energy-value"><b id="energy-value">18.6</b><span>kWh</span><em class="delta positive">↓ 4.2%</em></div>
           <div class="chart-wrap"><div class="chart-y"><span>24</span><span>18</span><span>12</span><span>6</span></div><svg id="energy-chart" viewBox="0 0 300 92" preserveAspectRatio="none" role="img" aria-label="今日能耗趋势"></svg></div>
           <div class="chart-x"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>

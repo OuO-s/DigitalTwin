@@ -9,22 +9,25 @@
     "crs": "WGS84"
   },
   "extentMeters": 800,
-  "mapCenterOffsetMeters": [-100, 0],
-  "map": {
-    "provider": "天地图",
-    "zoom": 18,
-    "image": "/assets/maps/site.png",
-    "metadata": "/assets/maps/site.json"
-  },
+  "anchorRole": "园区地址锚点",
   "buildings": [
     {
-      "id": "building-06",
+      "floors": [
+        7
+      ],
+      "footprintMeters": [
+        42,
+        26
+      ],
       "name": "6号楼",
+      "positionSource": "按园区锚点向西约100米定位，待现场坐标复核",
+      "centerOffsetMeters": [
+        -100,
+        0
+      ],
+      "id": "building-06",
       "floorCount": 9,
-      "centerOffsetMeters": [0, 0],
-      "footprintMeters": [42, 26],
-      "modelAccuracy": "示意模型，非测绘轮廓",
-      "floors": [7]
+      "modelAccuracy": "示意模型，非测绘轮廓"
     }
   ]
 }

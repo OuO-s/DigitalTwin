@@ -8,7 +8,7 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from .adapters import DemoAdapter
-from .config import DB_PATH, ROOT, floorplan_config, site_config
+from .config import DB_PATH, ROOT, campus_layout_config, floorplan_config, site_config
 from .hub import TwinHub
 from .storage import SQLiteTimeSeriesStore
 
@@ -39,6 +39,11 @@ async def health():
 @app.get("/api/v1/site")
 async def get_site():
     return site_config()
+
+
+@app.get("/api/v1/campus-layout")
+async def get_campus_layout():
+    return campus_layout_config()
 
 
 @app.get("/api/v1/floorplans/{floor_id}")
