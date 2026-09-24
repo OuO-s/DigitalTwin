@@ -4,6 +4,7 @@ export class TwinStore extends EventTarget {
     this.state = {
       view: "site",
       floorId: "f07",
+      activeRoomId: null,
       mode: "3d",
       selected: { kind: "floor", id: "building-06-f07", title: "6号楼 · 7楼" },
       layers: { spaces: true, equipment: true, alerts: true, heat: false },

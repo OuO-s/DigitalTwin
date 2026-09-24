@@ -38,7 +38,8 @@ function renderSelection() {
   $("#detail-title").textContent = title;
   $("#detail-type").textContent = selected.kind === "room" ? "房间空间" : selected.kind === "equipment" ? "设备资产" : selected.kind === "floor" ? "楼层空间" : "楼宇空间";
   $("#detail-id").textContent = selected.kind === "room" ? selected.id.toUpperCase() : selected.kind === "equipment" ? selected.id.toUpperCase() : "BUILDING-06 / F07";
-  const area = detail?.areaM2 ?? (selected.kind === "equipment" ? null : 1280);
+  const floorArea = store.state.floorplan ? store.state.floorplan.bounds.width * store.state.floorplan.bounds.depth / 1000000 : 0;
+  const area = detail?.areaM2 ?? (selected.kind === "equipment" ? null : Math.round(floorArea));
   const utilization = selected.kind === "room" ? Math.min(99, Math.round((detail.occupancy / Math.max(1, detail.areaM2 / 6)) * 100)) : 86;
   const values = document.querySelectorAll(".selected-summary > div");
   values[0].querySelector("b").innerHTML = area ? `${area.toLocaleString()} <em>m²</em>` : `${detail.reading} <em>${detail.unit}</em>`;
@@ -48,7 +49,7 @@ function renderSelection() {
   const status = values[2].querySelector("b");
   status.className = detail?.status === "warning" ? "status-warning" : "status-ok";
   status.innerHTML = `<i></i>${detail?.status === "warning" ? "需关注" : "正常"}`;
-  $("#open-floorplan").textContent = selected.kind === "equipment" ? "查看设备详情  ↗" : selected.kind === "room" ? "查看空间详情  ↗" : "查看楼层详情  ↗";
+  $("#open-floorplan").textContent = selected.kind === "room" && store.state.view === "floor" ? "进入房间布局  ↗" : selected.kind === "equipment" ? "查看设备详情  ↗" : selected.kind === "room" ? "房间布局已展开  ↗" : "查看楼层详情  ↗";
 }
 
 function renderSummary(summary) {
@@ -82,7 +83,7 @@ function renderDevices() {
   const floor = store.state.floorplan;
   if (!floor) return;
   const telemetry = store.state.telemetry;
-  const icons = { hvac: "◌", lighting: "☼", sensor: "⌁", power: "ϟ", access: "⌑" };
+  const icons = { hvac: "◌", lighting: "☼", sensor: "⌁", power: "ϟ", access: "⌑", printer: "▣" };
   $("#equipment-count").textContent = String(floor.equipments.length).padStart(2, "0");
   $("#device-list").innerHTML = floor.equipments.slice(0, 4).map(item => {
     const live = telemetry.get(item.id);
@@ -97,7 +98,7 @@ function renderDevices() {
 
 function renderAlerts(alerts = []) {
   const host = $("#alert-list");
-  host.innerHTML = alerts.map((item, index) => `<button class="alert-row ${item.level === "info" ? "info" : ""}" data-alert-target="${item.target ?? (index === 0 ? "room-703" : "building-06")}" data-alert-kind="${item.targetKind ?? (index === 0 ? "room" : "building")}"><span class="alert-marker">${item.level === "info" ? "i" : "!"}</span><span class="alert-copy"><b>${item.title}</b><small>${item.detail}</small></span><span class="alert-time">${item.time}</span></button>`).join("");
+  host.innerHTML = alerts.map((item, index) => `<button class="alert-row ${item.level === "info" ? "info" : ""}" data-alert-target="${item.target ?? (index === 0 ? "room-704" : "building-06")}" data-alert-kind="${item.targetKind ?? (index === 0 ? "room" : "building")}"><span class="alert-marker">${item.level === "info" ? "i" : "!"}</span><span class="alert-copy"><b>${item.title}</b><small>${item.detail}</small></span><span class="alert-time">${item.time}</span></button>`).join("");
   host.querySelectorAll("[data-alert-target]").forEach(button => button.addEventListener("click", () => {
     const kind = button.dataset.alertKind;
     const id = button.dataset.alertTarget;
@@ -108,7 +109,8 @@ function renderAlerts(alerts = []) {
 }
 
 function renderFloorButtons(site) {
-  const count = site.buildings.find(x => x.id === "building-06")?.floorCount ?? 9;
+  const count = site.buildings.find(x => x.id === "building-06")?.floorCount ?? 8;
+  document.querySelector(".floor-browser-head small").innerHTML = `6号楼 <b>·</b> ${count}F`;
   $("#floor-buttons").innerHTML = Array.from({ length: count }, (_, index) => {
     const number = count - index;
     const active = number === 7;
@@ -117,17 +119,36 @@ function renderFloorButtons(site) {
   $("[data-floor='f07']")?.addEventListener("click", () => store.setView("floor"));
 }
 
+function renderRoomDirectory() {
+  const host = $("#room-directory");
+  const floor = store.state.floorplan;
+  const visible = floor && ["floor", "room"].includes(store.state.view);
+  host.hidden = !visible;
+  if (!visible) return;
+  host.innerHTML = `<div class="room-directory-title"><span>7 楼空间</span><small>${floor.rooms.length} ZONES</small></div>${floor.rooms.map(room => `<button class="room-directory-row ${store.state.activeRoomId === room.id && store.state.view === "room" ? "active" : ""}" data-room-id="${room.id}"><span class="room-number">${room.id.slice(-3)}</span><span>${room.name}</span><span class="room-arrow">↗</span></button>`).join("")}`;
+  host.querySelectorAll("[data-room-id]").forEach(button => button.addEventListener("click", () => {
+    const id = button.dataset.roomId;
+    selectObject({ kind: "room", id });
+    store.update({ activeRoomId: id, view: "room" });
+    renderPage();
+  }));
+}
+
 function renderPage() {
   const view = store.state.view;
+  const roomName = roomById(store.state.activeRoomId)?.name ?? "房间";
   const titles = {
     site: ["智萃科技中心 · 园区总览", "海基六路99弄 · 园区空间模型示意"],
     building: ["6号楼 · 建筑空间", "智萃科技中心 · 楼层结构与运行状态"],
-    floor: ["6号楼 · 7楼空间", "从园区到房间，掌握空间与设备运行状态"],
+    floor: ["6号楼 · 7楼空间", "按手绘布局重建 · 点击房间进入查看"],
+    room: [`7楼 · ${roomName}`, "房间布局与设备位置 · 演示示意"],
   };
   $("#page-title").textContent = titles[view][0];
   $("#page-subtitle").textContent = titles[view][1];
-  $("#scene-context-label").textContent = view === "site" ? "园区示意重绘 · 6号楼居中" : view === "building" ? "6号楼 · 建筑结构示意" : "7楼示意平面 · 房间与设备";
-  $("#open-floorplan").classList.toggle("hidden-link", view === "floor");
+  $("#scene-context-label").textContent = view === "site" ? "按标注影像重绘 · 6号楼已定位" : view === "building" ? "6号楼 · 建筑结构示意" : view === "room" ? `${roomName} · 室内布局示意` : "7楼手绘布局 · 房间与设备";
+  $("#back-to-floor").hidden = view !== "room";
+  $("#open-floorplan").classList.toggle("hidden-link", view === "floor" && store.state.selected.kind !== "room");
+  renderRoomDirectory();
   renderSelection();
 }
 
@@ -143,7 +164,7 @@ function wireUi() {
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
     const view = button.dataset.view;
     store.setView(view);
-    if (view !== "floor") store.setSelected({ kind: view === "site" ? "site" : "building", id: view === "site" ? "zhicui-lingang" : "building-06", title: view === "site" ? "智萃科技中心" : "6号楼" });
+    if (view !== "floor" && view !== "room") store.setSelected({ kind: view === "site" ? "site" : "building", id: view === "site" ? "zhicui-lingang" : "building-06", title: view === "site" ? "智萃科技中心" : "6号楼" });
     renderPage();
   }));
   document.querySelectorAll("[data-section]").forEach(button => button.addEventListener("click", () => {
@@ -164,7 +185,12 @@ function wireUi() {
     button.classList.toggle("active", visible);
   }));
   $("#focus-btn").addEventListener("click", () => { store.setView("building"); renderPage(); scene.resetCamera(); });
-  $("#open-floorplan").addEventListener("click", () => { store.setView("floor"); renderPage(); });
+  $("#open-floorplan").addEventListener("click", () => {
+    if (store.state.selected.kind === "room" && store.state.view === "floor") store.update({ activeRoomId: store.state.selected.id, view: "room" });
+    else store.setView("floor");
+    renderPage();
+  });
+  $("#back-to-floor").addEventListener("click", () => { store.setView("floor"); renderPage(); });
   $("#reset-camera").addEventListener("click", () => scene.resetCamera());
   const windows = ["today", "week", "month"];
   const windowLabels = { today: "今日⌄", week: "近7日⌄", month: "近30日⌄" };

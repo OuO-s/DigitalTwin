@@ -71,7 +71,7 @@ async def get_summary():
         "energyKwh": 18.6,
         "temperature": 23.4,
         "alerts": [
-            {"id": "alert-01", "level": "warning", "title": "会议室 B 湿度偏高", "detail": "环境传感器 02 · 69%RH", "time": "刚刚"},
+            {"id": "alert-01", "level": "warning", "title": "会议室湿度偏高", "detail": "会议室环境传感器 · 69%RH", "target": "room-704", "targetKind": "room", "time": "刚刚"},
             {"id": "alert-02", "level": "info", "title": "7 楼设备在线", "detail": "模拟数据运行中", "time": "09:41"},
         ],
     }

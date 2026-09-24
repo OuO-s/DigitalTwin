@@ -65,13 +65,15 @@
             <button class="tool-chip" data-layer="heat">热力</button>
             <span class="tool-divider"></span>
             <div class="view-toggle"><button data-mode="2d">2D</button><button class="selected" data-mode="3d">3D</button></div>
+            <button class="tool-chip" id="back-to-floor" hidden>← 返回 7 楼</button>
             <button class="icon-button" id="reset-camera" aria-label="重置视角">⟲</button>
           </div>
         </div>
-        <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>相对园区锚点向西约100m</small></div></div>
+        <div class="room-directory" id="room-directory" hidden></div>
+        <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>三期东北侧 · 用户标注校准</small></div></div>
         <div class="scene-legend"><span><i class="legend-room"></i>空间</span><span><i class="legend-equipment"></i>设备</span><span><i class="legend-alert"></i>异常</span><span><i class="legend-heat"></i>热度</span></div>
         <div class="scene-zoom"><button id="zoom-in" aria-label="放大">＋</button><span></span><button id="zoom-out" aria-label="缩小">−</button></div>
-        <div class="scene-footnote"><span>场景由模型重新绘制</span><span>楼栋位置与轮廓待现场总图校准</span></div>
+        <div class="scene-footnote"><span>场景由模型重新绘制</span><span>楼栋绝对坐标和室内尺寸待实测</span></div>
         <div class="tooltip" id="scene-tooltip"></div>
       </section>
 

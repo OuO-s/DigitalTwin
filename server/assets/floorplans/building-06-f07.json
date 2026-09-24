@@ -6,32 +6,961 @@
     "floorId": "f07",
     "name": "6号楼 7楼",
     "unit": "mm",
-    "source": "demo-schematic",
+    "source": "user-hand-drawn-schematic",
     "storeyHeight": 3600,
-    "disclaimer": "示意布局与模拟设备，仅用于首版演示，不代表真实房间尺寸或设备位置。"
+    "disclaimer": "房间和家具布局依据用户手绘图转译；尺寸、门位及设备状态为可替换示意，右上角房间暂未命名。"
   },
-  "bounds": {"width": 24000, "depth": 16000},
+  "bounds": {
+    "width": 28400,
+    "depth": 38000
+  },
   "rooms": [
-    {"id":"room-701","name":"开放办公区","type":"office","polygon":[[0,0],[14000,0],[14000,9500],[0,9500]],"areaM2":133,"occupancy":18},
-    {"id":"room-702","name":"会议室 A","type":"meeting","polygon":[[14000,0],[24000,0],[24000,6000],[14000,6000]],"areaM2":60,"occupancy":8},
-    {"id":"room-703","name":"会议室 B","type":"meeting","polygon":[[14000,6000],[24000,6000],[24000,11000],[14000,11000]],"areaM2":50,"occupancy":6},
-    {"id":"room-704","name":"研发实验室","type":"lab","polygon":[[0,9500],[14000,9500],[14000,16000],[0,16000]],"areaM2":91,"occupancy":10},
-    {"id":"room-705","name":"设备与茶水区","type":"utility","polygon":[[14000,11000],[24000,11000],[24000,16000],[14000,16000]],"areaM2":50,"occupancy":2}
+    {
+      "id": "room-701",
+      "name": "办公室",
+      "type": "office",
+      "polygon": [
+        [
+          900,
+          6100
+        ],
+        [
+          7000,
+          6100
+        ],
+        [
+          7000,
+          12350
+        ],
+        [
+          900,
+          12350
+        ]
+      ],
+      "areaM2": 38,
+      "occupancy": 4,
+      "enclosed": true
+    },
+    {
+      "id": "room-702",
+      "name": "仓库",
+      "type": "storage",
+      "polygon": [
+        [
+          7150,
+          6100
+        ],
+        [
+          13250,
+          6100
+        ],
+        [
+          13250,
+          12350
+        ],
+        [
+          7150,
+          12350
+        ]
+      ],
+      "areaM2": 38,
+      "occupancy": 1,
+      "enclosed": true
+    },
+    {
+      "id": "room-703",
+      "name": "未命名房间",
+      "type": "unspecified",
+      "polygon": [
+        [
+          16750,
+          6100
+        ],
+        [
+          27000,
+          6100
+        ],
+        [
+          27000,
+          12500
+        ],
+        [
+          16750,
+          12500
+        ]
+      ],
+      "areaM2": 66,
+      "occupancy": 0,
+      "enclosed": true
+    },
+    {
+      "id": "room-704",
+      "name": "会议室",
+      "type": "meeting",
+      "polygon": [
+        [
+          16950,
+          13000
+        ],
+        [
+          27000,
+          13000
+        ],
+        [
+          27000,
+          19650
+        ],
+        [
+          16950,
+          19650
+        ]
+      ],
+      "areaM2": 67,
+      "occupancy": 10,
+      "enclosed": true
+    },
+    {
+      "id": "room-705",
+      "name": "西侧工位区",
+      "type": "workspace",
+      "polygon": [
+        [
+          900,
+          13600
+        ],
+        [
+          13250,
+          13600
+        ],
+        [
+          13250,
+          34200
+        ],
+        [
+          900,
+          34200
+        ]
+      ],
+      "areaM2": 254,
+      "occupancy": 18,
+      "enclosed": false
+    },
+    {
+      "id": "room-706",
+      "name": "东侧工位区",
+      "type": "workspace",
+      "polygon": [
+        [
+          16000,
+          20500
+        ],
+        [
+          27500,
+          20500
+        ],
+        [
+          27500,
+          37700
+        ],
+        [
+          16000,
+          37700
+        ]
+      ],
+      "areaM2": 198,
+      "occupancy": 16,
+      "enclosed": false
+    },
+    {
+      "id": "room-707",
+      "name": "休闲区域",
+      "type": "lounge",
+      "polygon": [
+        [
+          900,
+          300
+        ],
+        [
+          27000,
+          300
+        ],
+        [
+          27000,
+          5600
+        ],
+        [
+          900,
+          5600
+        ]
+      ],
+      "areaM2": 138,
+      "occupancy": 4,
+      "enclosed": false
+    }
   ],
-  "walls": [
-    {"id":"wall-north","start":[0,16000],"end":[24000,16000],"thickness":180,"height":3300},
-    {"id":"wall-east","start":[24000,0],"end":[24000,16000],"thickness":180,"height":3300},
-    {"id":"wall-south","start":[0,0],"end":[24000,0],"thickness":180,"height":3300},
-    {"id":"wall-west","start":[0,0],"end":[0,16000],"thickness":180,"height":3300}
+  "walls": [],
+  "furnishings": [
+    {
+      "id": "fur-001",
+      "kind": "desk",
+      "roomId": "room-701",
+      "position": [
+        3700,
+        9000
+      ],
+      "size": [
+        2500,
+        1100
+      ]
+    },
+    {
+      "id": "fur-002",
+      "kind": "shelf",
+      "roomId": "room-702",
+      "position": [
+        8700,
+        9100
+      ],
+      "size": [
+        1100,
+        4200
+      ]
+    },
+    {
+      "id": "fur-003",
+      "kind": "shelf",
+      "roomId": "room-702",
+      "position": [
+        11300,
+        9100
+      ],
+      "size": [
+        1100,
+        4200
+      ]
+    },
+    {
+      "id": "fur-004",
+      "kind": "conference",
+      "roomId": "room-704",
+      "position": [
+        21800,
+        16400
+      ],
+      "size": [
+        4900,
+        2200
+      ]
+    },
+    {
+      "id": "fur-005",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        19000,
+        14600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-006",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        19000,
+        18400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-007",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        20500,
+        14600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-008",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        20500,
+        18400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-009",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        22000,
+        14600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-010",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        22000,
+        18400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-011",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        23500,
+        14600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-012",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        23500,
+        18400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-013",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        25000,
+        14600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-014",
+      "kind": "chair",
+      "roomId": "room-704",
+      "position": [
+        25000,
+        18400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-015",
+      "kind": "cabinet",
+      "roomId": "room-705",
+      "position": [
+        5400,
+        21200
+      ],
+      "size": [
+        7600,
+        2200
+      ]
+    },
+    {
+      "id": "fur-016",
+      "kind": "table",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        16000
+      ],
+      "size": [
+        10800,
+        2100
+      ]
+    },
+    {
+      "id": "fur-017",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        14400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-018",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        17600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-019",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        14400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-020",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        17600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-021",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        14400
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-022",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        17600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-023",
+      "kind": "table",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        25100
+      ],
+      "size": [
+        10800,
+        2100
+      ]
+    },
+    {
+      "id": "fur-024",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        23500
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-025",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        26700
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-026",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        23500
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-027",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        26700
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-028",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        23500
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-029",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        26700
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-030",
+      "kind": "table",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        30200
+      ],
+      "size": [
+        10800,
+        2100
+      ]
+    },
+    {
+      "id": "fur-031",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        28600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-032",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        3900,
+        31800
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-033",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        28600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-034",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        7000,
+        31800
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-035",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        28600
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-036",
+      "kind": "chair",
+      "roomId": "room-705",
+      "position": [
+        10100,
+        31800
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-037",
+      "kind": "table",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        25700
+      ],
+      "size": [
+        11000,
+        2100
+      ]
+    },
+    {
+      "id": "fur-038",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        18100,
+        24100
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-039",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        18100,
+        27300
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-040",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        24100
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-041",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        27300
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-042",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        25500,
+        24100
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-043",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        25500,
+        27300
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-044",
+      "kind": "table",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        30600
+      ],
+      "size": [
+        11000,
+        2100
+      ]
+    },
+    {
+      "id": "fur-045",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        18100,
+        29000
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-046",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        18100,
+        32200
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-047",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        29000
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-048",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        21800,
+        32200
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-049",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        25500,
+        29000
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-050",
+      "kind": "chair",
+      "roomId": "room-706",
+      "position": [
+        25500,
+        32200
+      ],
+      "size": [
+        650,
+        650
+      ]
+    },
+    {
+      "id": "fur-051",
+      "kind": "printer",
+      "roomId": "room-706",
+      "position": [
+        22000,
+        36000
+      ],
+      "size": [
+        10700,
+        2000
+      ],
+      "label": "6台3D打印机"
+    },
+    {
+      "id": "fur-052",
+      "kind": "sofa",
+      "roomId": "room-707",
+      "position": [
+        9000,
+        3200
+      ],
+      "size": [
+        5300,
+        1300
+      ]
+    },
+    {
+      "id": "fur-053",
+      "kind": "sofa",
+      "roomId": "room-707",
+      "position": [
+        19000,
+        3200
+      ],
+      "size": [
+        5300,
+        1300
+      ]
+    }
   ],
   "equipments": [
-    {"id":"eq-hvac-01","label":"空调 01","category":"hvac","roomId":"room-701","position":[3500,7600,0],"status":"online","reading":23.4,"unit":"°C"},
-    {"id":"eq-hvac-02","label":"空调 02","category":"hvac","roomId":"room-701","position":[10800,7600,0],"status":"online","reading":23.1,"unit":"°C"},
-    {"id":"eq-light-01","label":"照明回路 01","category":"lighting","roomId":"room-701","position":[7000,3500,0],"status":"online","reading":76,"unit":"%"},
-    {"id":"eq-sensor-01","label":"环境传感器 01","category":"sensor","roomId":"room-702","position":[19000,4000,0],"status":"online","reading":24.1,"unit":"°C"},
-    {"id":"eq-sensor-02","label":"环境传感器 02","category":"sensor","roomId":"room-703","position":[19000,8500,0],"status":"warning","reading":69,"unit":"%RH"},
-    {"id":"eq-power-01","label":"配电箱 01","category":"power","roomId":"room-704","position":[3000,12500,0],"status":"online","reading":18.6,"unit":"kW"},
-    {"id":"eq-access-01","label":"门禁 01","category":"access","roomId":"room-705","position":[15600,13700,0],"status":"online","reading":"已闭锁","unit":""}
+    {
+      "id": "eq-printer-6",
+      "label": "6台3D打印机",
+      "category": "printer",
+      "roomId": "room-706",
+      "position": [
+        22100,
+        36000,
+        0
+      ],
+      "status": "online",
+      "reading": 6,
+      "unit": "台"
+    },
+    {
+      "id": "eq-hvac-01",
+      "label": "办公室空调",
+      "category": "hvac",
+      "roomId": "room-701",
+      "position": [
+        3700,
+        8000,
+        0
+      ],
+      "status": "online",
+      "reading": 23.4,
+      "unit": "°C"
+    },
+    {
+      "id": "eq-sensor-01",
+      "label": "会议室环境传感器",
+      "category": "sensor",
+      "roomId": "room-704",
+      "position": [
+        24500,
+        15000,
+        0
+      ],
+      "status": "warning",
+      "reading": 69,
+      "unit": "%RH"
+    },
+    {
+      "id": "eq-light-01",
+      "label": "工位区照明",
+      "category": "lighting",
+      "roomId": "room-705",
+      "position": [
+        7200,
+        21200,
+        0
+      ],
+      "status": "online",
+      "reading": 76,
+      "unit": "%"
+    },
+    {
+      "id": "eq-access-01",
+      "label": "办公室门禁",
+      "category": "access",
+      "roomId": "room-701",
+      "position": [
+        5700,
+        12000,
+        0
+      ],
+      "status": "online",
+      "reading": "已闭锁",
+      "unit": ""
+    }
   ]
 }
-

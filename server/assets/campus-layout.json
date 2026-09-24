@@ -2,43 +2,426 @@
   "meta": {
     "id": "zhicui-campus-layout",
     "siteId": "zhicui-lingang",
-    "source": "schematic-redraw",
+    "source": "user-marked-aerial-redraw",
     "unit": "m",
-    "disclaimer": "园区道路、绿地及相邻楼宇为重新绘制的演示示意。6号楼按园区锚点向西约100米布置，需用现场总图复核。"
+    "origin": "6号楼标注楼顶中心；局部几何为影像目测示意",
+    "disclaimer": "道路走向和6号楼相对位置按用户标注卫星图重绘；其余楼号、尺寸及绝对坐标待总图测量。地图影像不进入运行时。"
   },
-  "bounds": {"width": 270, "depth": 190},
+  "bounds": {
+    "width": 540,
+    "depth": 450,
+    "center": [
+      -150,
+      85
+    ]
+  },
   "buildings": [
-    {"id":"building-01","name":"1号楼","position":[-154,-52],"footprint":[34,22],"floors":8,"usage":"研发办公"},
-    {"id":"building-02","name":"2号楼","position":[-100,-64],"footprint":[38,24],"floors":9,"usage":"创新研发"},
-    {"id":"building-03","name":"3号楼","position":[-46,-48],"footprint":[34,22],"floors":6,"usage":"研发办公"},
-    {"id":"building-04","name":"4号楼","position":[-162,6],"footprint":[34,22],"floors":7,"usage":"产业服务"},
-    {"id":"building-05","name":"5号楼","position":[-48,8],"footprint":[38,24],"floors":8,"usage":"创新研发"},
-    {"id":"building-06","name":"6号楼","position":[-100,0],"footprint":[42,26],"floors":9,"usage":"智萃科技中心 · 7楼"},
-    {"id":"building-07","name":"7号楼","position":[-100,54],"footprint":[36,23],"floors":7,"usage":"研发办公"}
+    {
+      "id": "building-01",
+      "name": "1号楼",
+      "position": [
+        -132,
+        177
+      ],
+      "footprint": [
+        42,
+        28
+      ],
+      "floors": 8,
+      "usage": "研发办公",
+      "confidence": "image-label"
+    },
+    {
+      "id": "building-02",
+      "name": "待核对楼栋 A",
+      "position": [
+        -120,
+        -30
+      ],
+      "footprint": [
+        38,
+        30
+      ],
+      "floors": 8,
+      "usage": "研发办公",
+      "confidence": "roof-only"
+    },
+    {
+      "id": "building-03",
+      "name": "3号楼",
+      "position": [
+        -168,
+        72
+      ],
+      "footprint": [
+        42,
+        30
+      ],
+      "floors": 9,
+      "usage": "研发办公",
+      "confidence": "image-label"
+    },
+    {
+      "id": "building-04",
+      "name": "待核对楼栋 B",
+      "position": [
+        -236,
+        82
+      ],
+      "footprint": [
+        38,
+        29
+      ],
+      "floors": 8,
+      "usage": "研发办公",
+      "confidence": "roof-only"
+    },
+    {
+      "id": "building-05",
+      "name": "待核对楼栋 C",
+      "position": [
+        -206,
+        143
+      ],
+      "footprint": [
+        40,
+        29
+      ],
+      "floors": 8,
+      "usage": "研发办公",
+      "confidence": "roof-only"
+    },
+    {
+      "id": "building-06",
+      "name": "6号楼",
+      "position": [
+        0,
+        0
+      ],
+      "footprint": [
+        44,
+        31
+      ],
+      "floors": 8,
+      "usage": "智萃科技中心 · 7楼",
+      "confidence": "user-marked"
+    },
+    {
+      "id": "building-07",
+      "name": "待核对楼栋 D",
+      "position": [
+        -68,
+        91
+      ],
+      "footprint": [
+        39,
+        29
+      ],
+      "floors": 8,
+      "usage": "研发办公",
+      "confidence": "roof-only"
+    }
   ],
   "roads": [
-    {"id":"road-west-east","axis":"x","at":-31,"length":252,"width":11,"class":"main"},
-    {"id":"road-north-south","axis":"z","at":-211,"length":176,"width":10,"class":"main"},
-    {"id":"road-center","axis":"z","at":-67,"length":164,"width":7,"class":"campus"},
-    {"id":"road-east","axis":"z","at":10,"length":164,"width":7,"class":"campus"},
-    {"id":"road-west","axis":"z","at":-194,"length":164,"width":7,"class":"campus"}
+    {
+      "id": "road-north",
+      "name": "北侧道路",
+      "points": [
+        [
+          -210,
+          -220
+        ],
+        [
+          -124,
+          -147
+        ],
+        [
+          -35,
+          -66
+        ],
+        [
+          89,
+          39
+        ],
+        [
+          154,
+          93
+        ]
+      ],
+      "width": 13,
+      "class": "main"
+    },
+    {
+      "id": "road-east",
+      "name": "东侧道路",
+      "points": [
+        [
+          105,
+          57
+        ],
+        [
+          60,
+          111
+        ],
+        [
+          15,
+          168
+        ],
+        [
+          -49,
+          258
+        ],
+        [
+          -106,
+          327
+        ]
+      ],
+      "width": 12,
+      "class": "main"
+    },
+    {
+      "id": "road-south",
+      "name": "南侧道路",
+      "points": [
+        [
+          -382,
+          170
+        ],
+        [
+          -295,
+          245
+        ],
+        [
+          -195,
+          335
+        ],
+        [
+          -102,
+          417
+        ]
+      ],
+      "width": 13,
+      "class": "main"
+    },
+    {
+      "id": "road-west",
+      "name": "西侧道路",
+      "points": [
+        [
+          -390,
+          62
+        ],
+        [
+          -334,
+          -8
+        ],
+        [
+          -280,
+          -80
+        ],
+        [
+          -220,
+          -154
+        ]
+      ],
+      "width": 12,
+      "class": "main"
+    },
+    {
+      "id": "road-campus",
+      "name": "园区内部通道",
+      "points": [
+        [
+          -253,
+          26
+        ],
+        [
+          -204,
+          64
+        ],
+        [
+          -149,
+          110
+        ],
+        [
+          -93,
+          155
+        ],
+        [
+          -45,
+          197
+        ]
+      ],
+      "width": 6,
+      "class": "campus"
+    }
   ],
   "paths": [
-    {"id":"walk-north","position":[-100,-31],"size":[190,5]},
-    {"id":"walk-south","position":[-100,35],"size":[190,5]},
-    {"id":"walk-spine","position":[-100,2],"size":[5,116]}
+    {
+      "id": "walk-court",
+      "position": [
+        -96,
+        60
+      ],
+      "size": [
+        68,
+        6
+      ],
+      "rotation": -42
+    },
+    {
+      "id": "walk-inner",
+      "position": [
+        -159,
+        123
+      ],
+      "size": [
+        72,
+        5
+      ],
+      "rotation": -42
+    }
   ],
   "landscape": [
-    {"id":"garden-center","position":[-100,2],"size":[62,30],"kind":"garden"},
-    {"id":"garden-east","position":[-14,4],"size":[28,32],"kind":"garden"},
-    {"id":"garden-north","position":[-101,-92],"size":[100,18],"kind":"green"},
-    {"id":"garden-south","position":[-102,83],"size":[112,20],"kind":"green"}
+    {
+      "id": "garden-court",
+      "position": [
+        -98,
+        50
+      ],
+      "size": [
+        48,
+        34
+      ],
+      "kind": "garden"
+    },
+    {
+      "id": "garden-south",
+      "position": [
+        -151,
+        244
+      ],
+      "size": [
+        102,
+        26
+      ],
+      "kind": "green"
+    },
+    {
+      "id": "garden-west",
+      "position": [
+        -286,
+        124
+      ],
+      "size": [
+        24,
+        94
+      ],
+      "kind": "green"
+    }
   ],
   "surroundings": [
-    {"id":"context-north","position":[-73,-128],"size":[80,22],"height":8},
-    {"id":"context-west","position":[-226,18],"size":[20,80],"height":6},
-    {"id":"context-east","position":[-5,18],"size":[24,76],"height":7},
-    {"id":"context-south","position":[-113,112],"size":[118,24],"height":5}
+    {
+      "id": "context-east-01",
+      "position": [
+        175,
+        56
+      ],
+      "size": [
+        42,
+        32
+      ],
+      "height": 16
+    },
+    {
+      "id": "context-east-02",
+      "position": [
+        143,
+        158
+      ],
+      "size": [
+        46,
+        32
+      ],
+      "height": 14
+    },
+    {
+      "id": "context-south",
+      "position": [
+        -28,
+        331
+      ],
+      "size": [
+        48,
+        34
+      ],
+      "height": 13
+    }
+  ],
+  "treePositions": [
+    [
+      -293,
+      87
+    ],
+    [
+      -275,
+      116
+    ],
+    [
+      -252,
+      184
+    ],
+    [
+      -205,
+      234
+    ],
+    [
+      -155,
+      272
+    ],
+    [
+      -89,
+      264
+    ],
+    [
+      -42,
+      227
+    ],
+    [
+      -25,
+      184
+    ],
+    [
+      -75,
+      144
+    ],
+    [
+      -99,
+      122
+    ],
+    [
+      -109,
+      80
+    ],
+    [
+      -139,
+      43
+    ],
+    [
+      -196,
+      14
+    ],
+    [
+      -258,
+      -41
+    ],
+    [
+      -303,
+      -12
+    ],
+    [
+      -327,
+      32
+    ]
   ]
 }
-

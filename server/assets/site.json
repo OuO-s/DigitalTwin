@@ -9,24 +9,24 @@
     "crs": "WGS84"
   },
   "extentMeters": 800,
-  "anchorRole": "园区地址锚点",
+  "anchorRole": "用户提供的定位坐标；楼栋影像配准待现场测量",
   "buildings": [
     {
       "floors": [
         7
       ],
       "footprintMeters": [
-        42,
-        26
+        44,
+        31
       ],
       "name": "6号楼",
-      "positionSource": "按园区锚点向西约100米定位，待现场坐标复核",
+      "positionSource": "用户红圈卫星图确认：三期东北侧、交叉口西南侧；本地场景以6号楼为原点，绝对坐标仍待测量",
       "centerOffsetMeters": [
-        -100,
+        0,
         0
       ],
       "id": "building-06",
-      "floorCount": 9,
+      "floorCount": 8,
       "modelAccuracy": "示意模型，非测绘轮廓"
     }
   ]

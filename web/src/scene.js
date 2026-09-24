@@ -56,7 +56,7 @@ export class TwinScene {
       const previous = this.state;
       this.state = event.detail;
       const resetCamera = previous.view !== this.state.view || previous.mode !== this.state.mode;
-      const changed = resetCamera || previous.floorplan !== this.state.floorplan || previous.campusLayout !== this.state.campusLayout || previous.selected !== this.state.selected || previous.layers !== this.state.layers;
+      const changed = resetCamera || previous.floorplan !== this.state.floorplan || previous.activeRoomId !== this.state.activeRoomId || previous.campusLayout !== this.state.campusLayout || previous.selected !== this.state.selected || previous.layers !== this.state.layers;
       if (changed) this.rebuild(resetCamera);
     };
     store.addEventListener("change", this.handleChange);
@@ -82,7 +82,7 @@ export class TwinScene {
 
   addBox(parent, size, position, material, cast = true) {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material);
-    mesh.position.set(...position);
+    mesh.position.set(position[0] - (parent.userData.originX ?? 0), position[1], position[2] - (parent.userData.originZ ?? 0));
     mesh.castShadow = cast;
     mesh.receiveShadow = true;
     parent.add(mesh);
@@ -109,7 +109,8 @@ export class TwinScene {
     const oldTarget = this.controls.target.clone();
     this.clearScene();
     if (!this.state.floorplan) return;
-    if (this.state.view === "floor") this.buildFloor();
+    if (this.state.view === "room") this.buildRoomView();
+    else if (this.state.view === "floor") this.buildFloor();
     else if (this.state.view === "site") this.buildCampus();
     else this.buildBuildingView();
     if (resetCamera) this.applyCamera();
@@ -122,58 +123,58 @@ export class TwinScene {
 
   buildingPosition(id = "building-06") {
     const row = this.state.campusLayout?.buildings.find(item => item.id === id);
-    return row?.position ?? this.state.site?.buildings?.[0]?.centerOffsetMeters ?? [-100, 0];
+    return row?.position ?? this.state.site?.buildings?.[0]?.centerOffsetMeters ?? [0, 0];
   }
 
   buildCampus() {
     const layout = this.state.campusLayout;
     if (!layout) return;
     const { width, depth } = layout.bounds;
-    const floor = this.addBox(this.root, [width + 230, 1, depth + 220], [-100, -1.2, 0], mat(0x17372e), false);
+    const [cx, cz] = layout.bounds.center ?? [0, 0];
+    const floor = this.addBox(this.root, [width + 90, 1, depth + 90], [cx, -1.2, cz], mat(0x17372e), false);
     floor.receiveShadow = true;
-    this.addBox(this.root, [width + 45, 0.9, depth + 42], [-100, -0.25, 0], mat(0x23423a), false);
+    this.addBox(this.root, [width + 20, 0.9, depth + 20], [cx, -0.25, cz], mat(0x23423a), false);
 
     for (const block of layout.surroundings) this.buildContextBlock(block);
     for (const road of layout.roads) this.buildRoad(road);
     for (const patch of layout.landscape) this.buildGarden(patch);
     for (const path of layout.paths) {
-      this.addBox(this.root, [path.size[0], 0.22, path.size[1]], [path.position[0], 0.15, path.position[1]], mat(0x9aaea7));
-      this.addBox(this.root, [path.size[0] * 0.96, 0.08, path.size[1] * 0.62], [path.position[0], 0.3, path.position[1]], mat(0xc7d4cc));
+      const walk = this.addBox(this.root, [path.size[0], 0.22, path.size[1]], [path.position[0], 0.15, path.position[1]], mat(0x9aaea7));
+      const paving = this.addBox(this.root, [path.size[0] * 0.96, 0.08, path.size[1] * 0.62], [path.position[0], 0.3, path.position[1]], mat(0xc7d4cc));
+      walk.rotation.y = paving.rotation.y = THREE.MathUtils.degToRad(path.rotation ?? 0);
     }
 
     for (const row of layout.buildings) this.buildCampusBuilding(row, row.id === "building-06");
     this.addTreeRows();
-    this.addAnchorMarker();
     this.addCompass();
   }
 
   buildRoad(road) {
-    const xRoad = road.axis === "x";
-    const center = xRoad ? [-100, road.at] : [road.at, -5];
-    const sidewalkSize = xRoad ? [road.length, 0.24, road.width + 2.4] : [road.width + 2.4, 0.24, road.length];
-    const roadSize = xRoad ? [road.length, 0.18, road.width] : [road.width, 0.18, road.length];
-    this.addBox(this.root, sidewalkSize, [center[0], 0.06, center[1]], mat(0x778c89));
-    this.addBox(this.root, roadSize, [center[0], 0.19, center[1]], mat(road.class === "main" ? 0x263943 : 0x30444a));
-    const dashCount = Math.floor(road.length / 12);
-    for (let i = 0; i < dashCount; i++) {
-      const along = -road.length / 2 + 6 + i * 12;
-      const p = xRoad ? [center[0] + along, 0.3, center[1]] : [center[0], 0.3, center[1] + along];
-      const sz = xRoad ? [5.2, 0.025, 0.14] : [0.14, 0.025, 5.2];
-      this.addBox(this.root, sz, p, mat(0x9bafa9, { emissive: 0x304444, emissiveIntensity: 0.18 }), false);
-    }
-    const curbColor = mat(0xd0d9cf);
-    const offset = road.width / 2 + 0.58;
-    for (const side of [-1, 1]) {
-      if (xRoad) this.addBox(this.root, [road.length, 0.25, 0.35], [center[0], 0.16, center[1] + side * offset], curbColor);
-      else this.addBox(this.root, [0.35, 0.25, road.length], [center[0] + side * offset, 0.16, center[1]], curbColor);
-    }
-    if (road.id === "road-west-east") {
-      const texture = this.makeFlowTexture();
-      this.flowTextures.push(texture);
-      const flow = new THREE.Mesh(new THREE.PlaneGeometry(road.length * 0.82, 0.62), new THREE.MeshBasicMaterial({ map: texture, color: 0x77fff1, transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
-      flow.rotation.x = -Math.PI / 2;
-      flow.position.set(center[0], 0.34, center[1]);
-      this.root.add(flow);
+    const points = road.points ?? [];
+    for (let segment = 0; segment < points.length - 1; segment++) {
+      const [x1, z1] = points[segment];
+      const [x2, z2] = points[segment + 1];
+      const length = Math.hypot(x2 - x1, z2 - z1);
+      const group = new THREE.Group();
+      group.position.set((x1 + x2) / 2, 0, (z1 + z2) / 2);
+      group.rotation.y = -Math.atan2(z2 - z1, x2 - x1);
+      this.root.add(group);
+      this.addBox(group, [length + 0.5, 0.24, road.width + 2.4], [0, 0.06, 0], mat(0x778c89));
+      this.addBox(group, [length + 0.5, 0.18, road.width], [0, 0.19, 0], mat(road.class === "main" ? 0x263943 : 0x30444a));
+      for (let along = -length / 2 + 6; along < length / 2 - 3; along += 12) {
+        this.addBox(group, [5.2, 0.025, 0.14], [along, 0.3, 0], mat(0x9bafa9, { emissive: 0x304444, emissiveIntensity: 0.18 }), false);
+      }
+      for (const side of [-1, 1]) {
+        this.addBox(group, [length + 0.5, 0.25, 0.35], [0, 0.16, side * (road.width / 2 + 0.58)], mat(0xd0d9cf));
+      }
+      if (road.id === "road-north") {
+        const texture = this.makeFlowTexture();
+        this.flowTextures.push(texture);
+        const flow = new THREE.Mesh(new THREE.PlaneGeometry(length * 0.82, 0.62), new THREE.MeshBasicMaterial({ map: texture, color: 0x77fff1, transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+        flow.rotation.x = -Math.PI / 2;
+        flow.position.y = 0.34;
+        group.add(flow);
+      }
     }
   }
 
@@ -230,59 +231,65 @@ export class TwinScene {
   buildCampusBuilding(row, selected) {
     const [x, z] = row.position;
     const [w, d] = row.footprint;
+    const group = new THREE.Group();
+    group.position.set(x, 0, z);
+    group.rotation.y = -Math.PI / 4;
+    group.userData.originX = x;
+    group.userData.originZ = z;
+    this.root.add(group);
     const height = row.floors * 3.45;
     const baseMaterial = mat(selected ? 0x267c78 : 0x425b5d, { emissive: selected ? 0x0b3d3e : 0x102225, emissiveIntensity: selected ? 0.38 : 0.18 });
-    this.addBox(this.root, [w + 7, 0.75, d + 7], [x, 0.42, z], mat(selected ? 0x327f76 : 0x778e83));
-    this.addBox(this.root, [w + 2.5, 0.46, d + 2.5], [x, 0.96, z], mat(selected ? 0x173a42 : 0x253e45));
+    this.addBox(group, [w + 7, 0.75, d + 7], [x, 0.42, z], mat(selected ? 0x327f76 : 0x778e83));
+    this.addBox(group, [w + 2.5, 0.46, d + 2.5], [x, 0.96, z], mat(selected ? 0x173a42 : 0x253e45));
 
     for (let floor = 0; floor < row.floors; floor++) {
       const y = 1.45 + floor * 3.35;
       const glass = mat(selected ? (floor % 2 ? 0x317b83 : 0x28636f) : (floor % 2 ? 0x3a6672 : 0x315866), { roughness: 0.25, metalness: 0.42, emissive: selected ? 0x0a292e : 0x081920, emissiveIntensity: selected ? 0.28 : 0.16 });
-      this.addBox(this.root, [w, 3.08, d], [x, y, z], glass);
+      this.addBox(group, [w, 3.08, d], [x, y, z], glass);
       const band = mat(selected && floor === 6 ? 0x72e8da : 0x93b7b5, { emissive: selected && floor === 6 ? 0x179e93 : 0x153336, emissiveIntensity: selected && floor === 6 ? 0.65 : 0.2 });
-      this.addBox(this.root, [w + 0.7, 0.14, d + 0.7], [x, y - 1.5, z], band, false);
+      this.addBox(group, [w + 0.7, 0.14, d + 0.7], [x, y - 1.5, z], band, false);
       const windowRows = Math.max(3, Math.floor(w / 5.6));
       for (let col = 0; col < windowRows; col++) {
         const wx = x - w / 2 + (col + 0.5) * w / windowRows;
-        this.addBox(this.root, [0.16, 2.25, 0.09], [wx, y, z + d / 2 + 0.06], mat(0x9cded7, { emissive: 0x297b79, emissiveIntensity: 0.26 }), false);
+        this.addBox(group, [0.16, 2.25, 0.09], [wx, y, z + d / 2 + 0.06], mat(0x9cded7, { emissive: 0x297b79, emissiveIntensity: 0.26 }), false);
       }
     }
 
-    this.addBox(this.root, [w + 2.4, 0.68, d + 2.4], [x, height + 0.92, z], mat(selected ? 0x4b9392 : 0x547981));
+    this.addBox(group, [w + 2.4, 0.68, d + 2.4], [x, height + 0.92, z], mat(selected ? 0x4b9392 : 0x547981));
     if (this.state.layers.heat && this.state.view === "site") {
       const heat = row.id === "building-06" ? 0.78 : 0.24 + (Number(row.id.slice(-2)) % 5) * 0.12;
       const heatColor = new THREE.Color().setHSL(0.55 - heat * 0.48, 0.86, 0.53);
       const roofHeat = new THREE.Mesh(new THREE.BoxGeometry(w + 1.4, 0.1, d + 1.4), new THREE.MeshBasicMaterial({ color: heatColor, transparent: true, opacity: 0.62, blending: THREE.AdditiveBlending }));
-      roofHeat.position.set(x, height + 1.31, z);
-      this.root.add(roofHeat);
+      roofHeat.position.set(0, height + 1.31, 0);
+      group.add(roofHeat);
     }
     const roofUnitMat = mat(0x192c36, { metalness: 0.28 });
-    this.addBox(this.root, [w * 0.36, 1.25, d * 0.28], [x, height + 1.85, z], roofUnitMat);
-    this.addBox(this.root, [w * 0.22, 0.8, d * 0.2], [x - w * 0.28, height + 1.6, z + d * 0.2], roofUnitMat);
+    this.addBox(group, [w * 0.36, 1.25, d * 0.28], [x, height + 1.85, z], roofUnitMat);
+    this.addBox(group, [w * 0.22, 0.8, d * 0.2], [x - w * 0.28, height + 1.6, z + d * 0.2], roofUnitMat);
 
     if (selected) {
       const ring = new THREE.Mesh(new THREE.RingGeometry(0.91, 1, 72), new THREE.MeshBasicMaterial({ color: C.cyan, transparent: true, opacity: 0.88, side: THREE.DoubleSide }));
       ring.rotation.x = -Math.PI / 2;
-      ring.position.set(x, 0.91, z);
+      ring.position.set(0, 0.91, 0);
       ring.scale.set(w / 2 + 11, d / 2 + 11, 1);
-      this.root.add(ring);
+      group.add(ring);
       const scanMaterial = new THREE.MeshBasicMaterial({ color: 0x6bfff0, transparent: true, opacity: 0.18, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
       this.scanBand = new THREE.Mesh(new THREE.PlaneGeometry(w + 3, d + 3), scanMaterial);
       this.scanBand.rotation.x = -Math.PI / 2;
-      this.scanBand.position.set(x, 2, z);
+      this.scanBand.position.set(0, 2, 0);
       this.scanBand.userData.maxHeight = height;
-      this.root.add(this.scanBand);
+      group.add(this.scanBand);
     }
 
     const label = this.makeBuildingLabel(row.name, row.floors, selected);
-    label.position.set(x, height + 8, z);
+    label.position.set(0, height + 8, 0);
     label.scale.set(selected ? 25 : 19, selected ? 5.9 : 4.5, 1);
-    this.root.add(label);
+    group.add(label);
 
     const hit = new THREE.Mesh(new THREE.BoxGeometry(w + 2, height + 5, d + 2), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
-    hit.position.set(x, height / 2 + 1, z);
+    hit.position.set(0, height / 2 + 1, 0);
     hit.userData = { kind: "building", id: row.id, title: row.name, subtitle: `${row.floors}层 · ${row.usage}` };
-    this.root.add(hit);
+    group.add(hit);
     this.clickable.push(hit);
   }
 
@@ -318,16 +325,7 @@ export class TwinScene {
   }
 
   addTreeRows() {
-    const positions = [];
-    for (let x = -218; x <= 18; x += 15) {
-      positions.push([x, -83], [x + 6, 91]);
-    }
-    for (let z = -75; z <= 75; z += 15) {
-      positions.push([-224, z], [24, z + 5]);
-    }
-    for (let x = -182; x <= -26; x += 19) {
-      positions.push([x, -24], [x + 7, 31]);
-    }
+    const positions = this.state.campusLayout?.treePositions ?? [];
     const trunkGeometry = new THREE.CylinderGeometry(0.42, 0.62, 4.2, 7);
     const crownGeometry = new THREE.IcosahedronGeometry(2.25, 1);
     const trunk = new THREE.InstancedMesh(trunkGeometry, mat(0x725b46), positions.length);
@@ -367,7 +365,7 @@ export class TwinScene {
   }
 
   addCompass() {
-    const origin = new THREE.Vector3(-211, 0.8, -69);
+    const origin = new THREE.Vector3(-339, 0.8, -131);
     const arrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), origin, 14, C.cyan, 3.2, 1.8);
     this.root.add(arrow);
   }
@@ -388,7 +386,7 @@ export class TwinScene {
     for (let i = -2; i <= 2; i++) {
       this.addBox(this.root, [1.7, 0.28, 3.6], [x + i * 4, 0.26, z + 20], mat(0xcbd4c8), false);
     }
-    this.addFloorBadges(row.floors * 3.45, x, z);
+    this.addFloorBadges(row.floors * 3.45, x, z, row.floors);
   }
 
   addTreeCluster(x, z) {
@@ -405,8 +403,8 @@ export class TwinScene {
     }
   }
 
-  addFloorBadges(height, x, z) {
-    for (let i = 0; i < 9; i++) {
+  addFloorBadges(height, x, z, count = 8) {
+    for (let i = 0; i < count; i++) {
       const marker = new THREE.Mesh(new THREE.SphereGeometry(i === 6 ? 1.2 : 0.58, 16, 12), new THREE.MeshBasicMaterial({ color: i === 6 ? C.cyan : 0x78959a }));
       marker.position.set(x + 25, 2 + i * 3.6, z);
       marker.userData = { kind: "floor", id: `f${String(i + 1).padStart(2, "0")}`, title: `${i + 1}楼`, subtitle: i === 6 ? "当前演示楼层" : "楼层资料待接入" };
@@ -420,71 +418,137 @@ export class TwinScene {
     this.root.add(ring);
   }
 
-  buildFloor() {
-    const data = this.state.floorplan;
-    const g = new THREE.Group();
-    const w = data.bounds.width / 1000;
-    const d = data.bounds.depth / 1000;
-    this.addBox(g, [w + 1.8, 0.55, d + 1.8], [0, -0.48, 0], mat(0x183d3f), false);
-    this.addBox(g, [w + 24, 0.2, d + 24], [0, -0.86, 0], mat(0x142d2a), false);
-    const outline = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, 0.06, d)), new THREE.LineBasicMaterial({ color: 0x61e0d6, transparent: true, opacity: 0.9 }));
-    outline.position.y = -0.14;
-    g.add(outline);
+  floorPosition(x, y, width, depth, originX = 0, originY = 0) {
+    return [x / 1000 - width / 2 - originX, depth / 2 - y / 1000 - originY];
+  }
 
-    const selected = this.state.selected;
-    for (const room of (this.state.layers.spaces ? data.rooms : [])) {
-      const xs = room.polygon.map(p => p[0] / 1000);
-      const zs = room.polygon.map(p => p[1] / 1000);
-      const minX = Math.min(...xs), maxX = Math.max(...xs), minZ = Math.min(...zs), maxZ = Math.max(...zs);
-      const use = Math.max(0, Math.min(1, room.occupancy / Math.max(1, room.areaM2 / 6)));
-      const heatColor = new THREE.Color(0x32d38d).lerp(new THREE.Color(0xf3a64a), use);
-      const roomColor = this.state.layers.heat ? heatColor : new THREE.Color(C.room);
-      const roomMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(maxX - minX - 0.12, 0.16, maxZ - minZ - 0.12),
-        new THREE.MeshStandardMaterial({ color: room.id === selected.id ? C.selected : roomColor, emissive: this.state.layers.heat ? heatColor : new THREE.Color(0x125b5b), emissiveIntensity: room.id === selected.id ? 0.72 : this.state.layers.heat ? 0.35 : 0.4, transparent: true, opacity: room.id === selected.id ? 0.84 : 0.62, roughness: 0.42 }),
-      );
-      roomMesh.position.set((minX + maxX) / 2 - w / 2, 0.1, d / 2 - (minZ + maxZ) / 2);
-      roomMesh.userData = { kind: "room", id: room.id, title: room.name, subtitle: `${room.areaM2} m² · ${room.occupancy} 人` };
-      g.add(roomMesh);
-      this.clickable.push(roomMesh);
-      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(roomMesh.geometry), new THREE.LineBasicMaterial({ color: 0x9dece4, transparent: true, opacity: 0.55 }));
-      edges.position.copy(roomMesh.position);
-      g.add(edges);
-    }
+  roomBounds(room) {
+    const xs = room.polygon.map(point => point[0] / 1000);
+    const ys = room.polygon.map(point => point[1] / 1000);
+    return { minX: Math.min(...xs), maxX: Math.max(...xs), minY: Math.min(...ys), maxY: Math.max(...ys) };
+  }
 
-    if (this.state.layers.equipment) {
-      for (const device of data.equipments) {
-        const [mx, my] = device.position;
-        const color = device.status === "warning" ? C.warning : C.equipment;
-        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.44, 8), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 }));
-        stem.position.set(mx / 1000 - w / 2, 0.34, d / 2 - my / 1000);
-        g.add(stem);
-        const dot = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 10), new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.2 }));
-        dot.position.set(mx / 1000 - w / 2, 0.62, d / 2 - my / 1000);
-        dot.userData = { kind: "equipment", id: device.id, title: device.label, subtitle: `${device.status === "warning" ? "需关注" : "在线"} · ${device.reading}${device.unit}` };
-        g.add(dot);
-        this.clickable.push(dot);
-        if (device.status === "warning" && this.state.layers.alerts) {
-          const alertRing = new THREE.Mesh(new THREE.RingGeometry(0.34, 0.46, 28), new THREE.MeshBasicMaterial({ color: C.warning, transparent: true, opacity: 0.78, side: THREE.DoubleSide }));
-          alertRing.rotation.x = -Math.PI / 2;
-          alertRing.position.set(mx / 1000 - w / 2, 0.16, d / 2 - my / 1000);
-          g.add(alertRing);
-        }
+  addFurniture(parent, item, position) {
+    const [x, z] = position;
+    const [w, d] = item.size.map(value => value / 1000);
+    const wood = mat(0xb5d8d5, { metalness: 0.1 });
+    const dark = mat(0x356276);
+    if (item.kind === "chair") {
+      this.addBox(parent, [Math.min(w, 0.66), 0.14, Math.min(d, 0.66)], [x, 0.48, z], dark);
+      this.addBox(parent, [Math.min(w, 0.66), 0.6, 0.12], [x, 0.83, z + d * 0.35], dark);
+    } else if (item.kind === "shelf") {
+      this.addBox(parent, [w, 1.8, d], [x, 1.0, z], mat(0x5e8790));
+      for (const height of [0.7, 1.2, 1.7]) this.addBox(parent, [w + 0.06, 0.08, d + 0.06], [x, height, z], wood);
+    } else if (item.kind === "cabinet") {
+      this.addBox(parent, [w, 1.15, d], [x, 0.62, z], mat(0x547b85));
+      for (let i = 1; i < 5; i++) this.addBox(parent, [0.045, 0.7, d + 0.03], [x - w / 2 + i * w / 5, 0.66, z], mat(0x91bfc1));
+    } else if (item.kind === "printer") {
+      this.addBox(parent, [w + 0.25, 0.28, d + 0.25], [x, 0.16, z], wood);
+      for (let i = 0; i < 6; i++) {
+        const px = x - w / 2 + (i + 0.5) * w / 6;
+        this.addBox(parent, [Math.min(1.2, w / 7), 1.05, d * 0.72], [px, 0.84, z], mat(0x557f89));
+        this.addBox(parent, [Math.min(0.8, w / 8), 0.42, d * 0.35], [px, 1.4, z], mat(0x9be4dc));
+      }
+    } else if (item.kind === "sofa") {
+      this.addBox(parent, [w, 0.48, d], [x, 0.4, z], mat(0x477e82));
+      this.addBox(parent, [w, 0.75, 0.22], [x, 0.78, z + d * 0.42], mat(0x477e82));
+    } else {
+      const surfaceHeight = item.kind === "conference" ? 0.84 : 0.76;
+      this.addBox(parent, [w, 0.16, d], [x, surfaceHeight, z], wood);
+      for (const dx of [-1, 1]) for (const dz of [-1, 1]) {
+        this.addBox(parent, [0.14, surfaceHeight - 0.1, 0.14], [x + dx * (w / 2 - 0.24), (surfaceHeight - 0.1) / 2, z + dz * (d / 2 - 0.2)], dark);
       }
     }
-    const border = new THREE.GridHelper(30, 24, 0x28616d, 0x1d4552);
-    border.position.y = -0.03;
-    border.material.transparent = true;
-    border.material.opacity = 0.17;
-    g.add(border);
-    this.root.add(g);
+  }
+
+  addRoomWalls(parent, bounds, cx, cz, room) {
+    if (!room.enclosed) return;
+    const width = bounds.maxX - bounds.minX;
+    const depth = bounds.maxY - bounds.minY;
+    const wall = mat(0xb4e4e7, { transparent: true, opacity: 0.86, metalness: 0.1 });
+    const left = cx - width / 2, right = cx + width / 2;
+    const north = cz - depth / 2, south = cz + depth / 2;
+    this.addBox(parent, [width, 1.45, 0.13], [cx, 0.81, south], wall);
+    this.addBox(parent, [0.13, 1.45, depth], [left, 0.81, cz], wall);
+    this.addBox(parent, [0.13, 1.45, depth], [right, 0.81, cz], wall);
+    const opening = 1.2;
+    this.addBox(parent, [width * 0.58, 1.45, 0.13], [left + width * 0.29, 0.81, north], wall);
+    this.addBox(parent, [Math.max(0.4, width * 0.42 - opening), 1.45, 0.13], [right - (width * 0.42 - opening) / 2, 0.81, north], wall);
+  }
+
+  buildFloor() {
+    const data = this.state.floorplan;
+    const width = data.bounds.width / 1000;
+    const depth = data.bounds.depth / 1000;
+    this.addBox(this.root, [width + 3.5, 0.4, depth + 3.5], [0, -0.45, 0], mat(0x193b43), false);
+    this.addBox(this.root, [width + 0.3, 0.24, depth + 0.3], [0, -0.09, 0], mat(0xb7d0d1), false);
+    for (const room of (this.state.layers.spaces ? data.rooms : [])) {
+      const b = this.roomBounds(room);
+      const roomWidth = b.maxX - b.minX, roomDepth = b.maxY - b.minY;
+      const cx = (b.minX + b.maxX) / 2 - width / 2;
+      const cz = depth / 2 - (b.minY + b.maxY) / 2;
+      const intensity = Math.min(1, room.occupancy / Math.max(1, room.areaM2 / 6));
+      const heat = new THREE.Color(0x43c494).lerp(new THREE.Color(0xe8ad56), intensity);
+      const color = this.state.layers.heat ? heat : new THREE.Color(room.id === this.state.selected.id ? 0x73f2e5 : room.enclosed ? 0x5297aa : 0x42798f);
+      const floor = this.addBox(this.root, [roomWidth - 0.13, 0.08, roomDepth - 0.13], [cx, 0.1, cz], mat(color, { emissive: color, emissiveIntensity: 0.2, transparent: true, opacity: room.enclosed ? 0.91 : 0.72 }), false);
+      floor.userData = { kind: "room", id: room.id, title: room.name, subtitle: `${room.areaM2} m² · 点击进入` };
+      this.clickable.push(floor);
+      this.addRoomWalls(this.root, b, cx, cz, room);
+    }
+    for (const item of data.furnishings ?? []) {
+      const [x, z] = this.floorPosition(item.position[0], item.position[1], width, depth);
+      this.addFurniture(this.root, item, [x, z]);
+    }
+    if (this.state.layers.equipment) for (const device of data.equipments) {
+      const [x, z] = this.floorPosition(device.position[0], device.position[1], width, depth);
+      const color = device.status === "warning" ? C.warning : C.equipment;
+      const dot = new THREE.Mesh(new THREE.SphereGeometry(0.19, 12, 10), new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 1.1 }));
+      dot.position.set(x, 1.82, z);
+      dot.userData = { kind: "equipment", id: device.id, title: device.label, subtitle: `${device.reading}${device.unit}` };
+      this.root.add(dot);
+      this.clickable.push(dot);
+    }
+  }
+
+  buildRoomView() {
+    const data = this.state.floorplan;
+    const room = data.rooms.find(item => item.id === this.state.activeRoomId) ?? data.rooms[0];
+    const b = this.roomBounds(room);
+    const width = b.maxX - b.minX, depth = b.maxY - b.minY;
+    const cx = (b.minX + b.maxX) / 2, cy = (b.minY + b.maxY) / 2;
+    this.addBox(this.root, [width + 4, 0.35, depth + 4], [0, -0.43, 0], mat(0x18373f), false);
+    this.addBox(this.root, [width, 0.18, depth], [0, 0, 0], mat(0x73b6c0, { emissive: 0x1a5a6b, emissiveIntensity: 0.25 }));
+    this.addRoomWalls(this.root, b, 0, 0, room);
+    for (const item of (data.furnishings ?? []).filter(value => value.roomId === room.id)) {
+      const x = item.position[0] / 1000 - cx;
+      const z = cy - item.position[1] / 1000;
+      this.addFurniture(this.root, item, [x, z]);
+    }
+    for (const device of data.equipments.filter(value => value.roomId === room.id)) {
+      const color = device.status === "warning" ? C.warning : C.equipment;
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), new THREE.MeshBasicMaterial({ color }));
+      sphere.position.set(device.position[0] / 1000 - cx, 2.1, cy - device.position[1] / 1000);
+      sphere.userData = { kind: "equipment", id: device.id, title: device.label, subtitle: `${device.reading}${device.unit}` };
+      this.root.add(sphere);
+      this.clickable.push(sphere);
+    }
   }
 
   applyCamera() {
     let target;
     let position;
     const isFloor = this.state.view === "floor";
-    if (isFloor) {
+    if (this.state.view === "room") {
+      const room = this.state.floorplan?.rooms.find(item => item.id === this.state.activeRoomId) ?? this.state.floorplan?.rooms[0];
+      const b = room ? this.roomBounds(room) : { minX: 0, maxX: 12, minY: 0, maxY: 12 };
+      const span = Math.max(b.maxX - b.minX, b.maxY - b.minY);
+      target = new THREE.Vector3(0, 0.4, 0);
+      position = this.state.mode === "2d" ? new THREE.Vector3(0.1, span * 2.1, 0.12) : new THREE.Vector3(span * 0.72, span * 1.03, span * 1.18);
+      this.camera.fov = 43;
+      this.controls.minDistance = 3;
+      this.controls.maxDistance = span * 4;
+      this.controls.maxPolarAngle = this.state.mode === "2d" ? 0.02 : Math.PI * 0.48;
+    } else if (isFloor) {
       target = new THREE.Vector3(0, 0, 0);
       position = new THREE.Vector3(0.1, this.state.mode === "2d" ? 54 : 35, this.state.mode === "2d" ? 0.12 : 43);
       this.camera.fov = this.state.mode === "2d" ? 36 : 43;
@@ -495,7 +559,7 @@ export class TwinScene {
       const [x, z] = this.buildingPosition();
       if (this.state.view === "site") {
         target = new THREE.Vector3(x, 5, z);
-        position = this.state.mode === "2d" ? new THREE.Vector3(x + 0.1, 490, z + 0.12) : new THREE.Vector3(x + 248, 286, z + 326);
+        position = this.state.mode === "2d" ? new THREE.Vector3(x + 0.1, 950, z + 0.12) : new THREE.Vector3(x + 365, 515, z + 625);
         this.controls.maxDistance = 900;
       } else {
         target = new THREE.Vector3(x, 14, z);
@@ -538,7 +602,8 @@ export class TwinScene {
       if (item.id === "f07") this.store.setView("floor");
       else this.onSelect({ ...item, kind: "floor" });
     }
-    if (item.kind === "room" || item.kind === "equipment") this.onSelect(item);
+    if (item.kind === "room") { this.onSelect(item); this.store.update({ activeRoomId: item.id, view: "room" }); }
+    if (item.kind === "equipment") this.onSelect(item);
   }
 
   resize() {

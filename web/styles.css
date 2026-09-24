@@ -12,3 +12,16 @@
 .hidden-link{visibility:hidden}.status-warning{font-size:9px;color:#e9ba5c}.status-warning i{display:inline-block;width:5px;height:5px;background:#e9ba5c;border-radius:50%;margin-right:4px}
 
 .alert-row{width:100%;background:transparent;border:0;font:inherit;text-align:left;cursor:pointer}.alert-row:hover .alert-copy b{color:#6de1d9}.legend-heat{background:#ea8655;box-shadow:0 0 8px #ee855a77}
+
+#back-to-floor[hidden] { display: none; }
+#back-to-floor { border-color: rgba(105,228,213,.48); color: #aaf5e9; }
+
+.room-directory { position: absolute; z-index: 7; left: 18px; top: 70px; width: 220px; max-height: calc(100% - 130px); overflow: auto; padding: 12px; background: rgba(8, 29, 41, .88); border: 1px solid rgba(107, 197, 205, .24); border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,.24); backdrop-filter: blur(12px); }
+.room-directory[hidden] { display: none; }
+.room-directory-title { display: flex; justify-content: space-between; align-items: baseline; color: #d4f4ef; font-size: 12px; letter-spacing: .08em; padding: 4px 5px 10px; }
+.room-directory-title small { color: #698f9d; font-size: 9px; }
+.room-directory-row { width: 100%; display: flex; gap: 9px; align-items: center; border: 1px solid transparent; background: rgba(46, 92, 105, .27); color: #c5dfe0; padding: 9px 8px; margin: 3px 0; border-radius: 6px; text-align: left; cursor: pointer; font: inherit; font-size: 12px; }
+.room-directory-row:hover, .room-directory-row.active { background: rgba(64, 174, 169, .25); border-color: rgba(101, 229, 213, .46); color: #e6fffb; }
+.room-number { color: #77d7d0; font-size: 10px; font-variant-numeric: tabular-nums; }
+.room-arrow { margin-left: auto; color: #74c9c4; }
+@media (max-width: 900px) { .room-directory { width: 174px; max-height: 45%; } }
