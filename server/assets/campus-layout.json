@@ -1,18 +1,24 @@
 {
   "meta": {
-    "id": "zhicui-campus-layout",
+    "id": "zhicui-park-campus-layout",
     "siteId": "zhicui-lingang",
-    "source": "user-marked-aerial-redraw",
+    "source": "user-marked-aerial-roof-redraw",
     "unit": "m",
-    "origin": "6号楼标注楼顶中心；局部几何为影像目测示意",
-    "disclaimer": "道路走向和6号楼相对位置按用户标注卫星图重绘；其余楼号、尺寸及绝对坐标待总图测量。地图影像不进入运行时。"
+    "origin": "被道路围合的七栋楼群几何中心；局部坐标 x 向东、z 向南，与 Three.js 场景一致",
+    "scaleMetersPerPixel": 0.34,
+    "referencePixel": [
+      572.8,
+      382.6
+    ],
+    "referenceImage": "用户 2026-09 红框标注卫星图（1193×774，共 7 个红框）",
+    "disclaimer": "楼栋位置按用户红框标注截图逐栋量取，屋顶轮廓取影像中浅色屋面范围。比例尺由 6 号楼 7 层手绘图外轮廓（28.4m×38.0m，室内面积合计 799m²）与影像屋顶像素反算，约 0.34 米/像素；1、4、6 号楼号来自影像注记，2、3、5 号楼号与全部实测尺寸仍待总平面图核对。地图影像不进入运行时。"
   },
   "bounds": {
-    "width": 540,
-    "depth": 450,
+    "width": 460,
+    "depth": 440,
     "center": [
-      -150,
-      85
+      5,
+      5
     ]
   },
   "buildings": [
@@ -20,408 +26,771 @@
       "id": "building-01",
       "name": "1号楼",
       "position": [
-        -132,
-        177
+        -32,
+        92
       ],
       "footprint": [
-        42,
-        28
+        28,
+        54
       ],
-      "floors": 8,
-      "usage": "研发办公",
-      "confidence": "image-label"
+      "rotation": 0,
+      "floors": 7,
+      "floorHeight": 3.6,
+      "usage": "科研办公",
+      "confidence": "image-label",
+      "facade": "glass"
     },
     {
       "id": "building-02",
-      "name": "待核对楼栋 A",
+      "name": "2号楼",
       "position": [
-        -120,
-        -30
+        42,
+        -81
       ],
       "footprint": [
-        38,
-        30
+        32,
+        45
       ],
+      "rotation": 0,
       "floors": 8,
-      "usage": "研发办公",
-      "confidence": "roof-only"
+      "floorHeight": 3.6,
+      "usage": "科研办公",
+      "confidence": "unverified-numbering",
+      "facade": "stone"
     },
     {
       "id": "building-03",
       "name": "3号楼",
       "position": [
-        -168,
-        72
+        -49,
+        1
       ],
       "footprint": [
-        42,
-        30
+        48,
+        15
       ],
-      "floors": 9,
-      "usage": "研发办公",
-      "confidence": "image-label"
+      "rotation": 0,
+      "floors": 6,
+      "floorHeight": 3.6,
+      "usage": "科研办公",
+      "confidence": "unverified-numbering",
+      "facade": "stone"
     },
     {
       "id": "building-04",
-      "name": "待核对楼栋 B",
+      "name": "4号楼",
       "position": [
-        -236,
-        82
+        -8,
+        -51
       ],
       "footprint": [
-        38,
-        29
+        20,
+        50
       ],
+      "rotation": 0,
       "floors": 8,
-      "usage": "研发办公",
-      "confidence": "roof-only"
+      "floorHeight": 3.6,
+      "usage": "科研办公",
+      "confidence": "image-label",
+      "facade": "glass"
     },
     {
       "id": "building-05",
-      "name": "待核对楼栋 C",
+      "name": "5号楼",
       "position": [
-        -206,
-        143
+        46,
+        23
       ],
       "footprint": [
-        40,
-        29
+        22,
+        45
       ],
-      "floors": 8,
-      "usage": "研发办公",
-      "confidence": "roof-only"
+      "rotation": 0,
+      "floors": 6,
+      "floorHeight": 3.6,
+      "usage": "科研办公",
+      "confidence": "unverified-numbering",
+      "facade": "glass"
     },
     {
       "id": "building-06",
       "name": "6号楼",
       "position": [
-        0,
-        0
+        91,
+        -31
       ],
       "footprint": [
-        44,
-        31
+        58,
+        29
       ],
+      "rotation": 0,
       "floors": 8,
+      "floorHeight": 3.6,
       "usage": "智萃科技中心 · 7楼",
-      "confidence": "user-marked"
+      "confidence": "primary",
+      "facade": "glass"
     },
     {
       "id": "building-07",
-      "name": "待核对楼栋 D",
+      "name": "财大金融学院",
       "position": [
-        -68,
-        91
+        -90,
+        47
       ],
       "footprint": [
-        39,
-        29
+        57,
+        19
       ],
-      "floors": 8,
-      "usage": "研发办公",
-      "confidence": "roof-only"
+      "rotation": 0,
+      "floors": 5,
+      "floorHeight": 3.9,
+      "usage": "上海财经大学滴水湖高级金融学院",
+      "confidence": "image-label",
+      "facade": "stone"
+    }
+  ],
+  "walkways": [
+    {
+      "id": "walkway-04-02",
+      "name": "4—2号楼连廊",
+      "points": [
+        [
+          -2,
+          -40
+        ],
+        [
+          32,
+          -70
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-04-03",
+      "name": "4—3号楼连廊",
+      "points": [
+        [
+          -14,
+          -30
+        ],
+        [
+          -38,
+          -4
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-03-05",
+      "name": "3—5号楼连廊",
+      "points": [
+        [
+          -26,
+          3
+        ],
+        [
+          38,
+          14
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-05-06",
+      "name": "5—6号楼连廊",
+      "points": [
+        [
+          52,
+          10
+        ],
+        [
+          72,
+          -22
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-02-06",
+      "name": "2—6号楼连廊",
+      "points": [
+        [
+          52,
+          -70
+        ],
+        [
+          76,
+          -40
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-03-07",
+      "name": "3—财大连廊",
+      "points": [
+        [
+          -64,
+          5
+        ],
+        [
+          -80,
+          38
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-07-01",
+      "name": "财大—1号楼连廊",
+      "points": [
+        [
+          -90,
+          55
+        ],
+        [
+          -42,
+          72
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
+    },
+    {
+      "id": "walkway-01-05",
+      "name": "1—5号楼连廊",
+      "points": [
+        [
+          -22,
+          88
+        ],
+        [
+          40,
+          40
+        ]
+      ],
+      "width": 5.4,
+      "height": 4.9
     }
   ],
   "roads": [
     {
       "id": "road-north",
-      "name": "北侧道路",
+      "name": "北侧环路",
       "points": [
         [
-          -210,
-          -220
+          14,
+          -184
         ],
         [
-          -124,
-          -147
+          30,
+          -140
         ],
         [
-          -35,
-          -66
+          120,
+          -74
         ],
         [
-          89,
-          39
+          190,
+          -25
         ],
         [
-          154,
-          93
+          228,
+          -4
         ]
       ],
       "width": 13,
-      "class": "main"
+      "class": "main",
+      "median": false
     },
     {
       "id": "road-east",
-      "name": "东侧道路",
+      "name": "南侧大道",
       "points": [
         [
-          105,
-          57
+          238,
+          -54
+        ],
+        [
+          190,
+          -25
         ],
         [
           60,
-          111
+          57
         ],
         [
-          15,
-          168
+          -70,
+          145
         ],
         [
-          -49,
-          258
-        ],
-        [
-          -106,
-          327
+          -142,
+          194
         ]
       ],
-      "width": 12,
-      "class": "main"
-    },
-    {
-      "id": "road-south",
-      "name": "南侧道路",
-      "points": [
-        [
-          -382,
-          170
-        ],
-        [
-          -295,
-          245
-        ],
-        [
-          -195,
-          335
-        ],
-        [
-          -102,
-          417
-        ]
-      ],
-      "width": 13,
-      "class": "main"
+      "width": 15,
+      "class": "main",
+      "median": true
     },
     {
       "id": "road-west",
-      "name": "西侧道路",
+      "name": "滨水东路",
       "points": [
         [
-          -390,
-          62
+          -196,
+          78
         ],
         [
-          -334,
-          -8
+          -150,
+          20
         ],
         [
-          -280,
-          -80
+          -58,
+          -54
         ],
         [
-          -220,
-          -154
+          30,
+          -140
+        ],
+        [
+          50,
+          -160
         ]
       ],
-      "width": 12,
-      "class": "main"
+      "width": 10,
+      "class": "campus",
+      "median": false
     },
     {
-      "id": "road-campus",
-      "name": "园区内部通道",
+      "id": "road-south",
+      "name": "西侧环路",
       "points": [
         [
-          -253,
-          26
+          -30,
+          190
         ],
         [
-          -204,
-          64
+          -70,
+          145
         ],
         [
-          -149,
-          110
+          -112,
+          82
         ],
         [
-          -93,
-          155
+          -150,
+          20
         ],
         [
-          -45,
-          197
+          -178,
+          -14
         ]
       ],
-      "width": 6,
-      "class": "campus"
+      "width": 10,
+      "class": "campus",
+      "median": false
     }
   ],
   "paths": [
     {
-      "id": "walk-court",
-      "position": [
-        -96,
-        60
-      ],
-      "size": [
-        68,
-        6
-      ],
-      "rotation": -42
+      "id": "path-loop-inner",
+      "name": "庭院主步道",
+      "width": 3.2,
+      "points": [
+        [
+          2,
+          -6
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          10,
+          18
+        ],
+        [
+          -2,
+          26
+        ],
+        [
+          -14,
+          20
+        ],
+        [
+          -16,
+          6
+        ],
+        [
+          -6,
+          -4
+        ],
+        [
+          0,
+          -8
+        ],
+        [
+          2,
+          -6
+        ]
+      ]
     },
     {
-      "id": "walk-inner",
-      "position": [
-        -159,
-        123
-      ],
-      "size": [
-        72,
-        5
-      ],
-      "rotation": -42
+      "id": "path-loop-outer",
+      "name": "庭院外环步道",
+      "width": 3.6,
+      "points": [
+        [
+          -26,
+          -14
+        ],
+        [
+          -16,
+          6
+        ],
+        [
+          -20,
+          24
+        ],
+        [
+          -6,
+          38
+        ],
+        [
+          10,
+          38
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          14,
+          -10
+        ]
+      ]
+    },
+    {
+      "id": "path-south-link",
+      "name": "南侧步道",
+      "width": 3,
+      "points": [
+        [
+          -16,
+          40
+        ],
+        [
+          -8,
+          52
+        ],
+        [
+          0,
+          62
+        ]
+      ]
+    },
+    {
+      "id": "path-west-link",
+      "name": "西侧步道",
+      "width": 3,
+      "points": [
+        [
+          -30,
+          14
+        ],
+        [
+          -44,
+          18
+        ],
+        [
+          -52,
+          26
+        ]
+      ]
+    },
+    {
+      "id": "path-north-link",
+      "name": "北侧步道",
+      "width": 3,
+      "points": [
+        [
+          10,
+          -20
+        ],
+        [
+          16,
+          -30
+        ],
+        [
+          24,
+          -38
+        ]
+      ]
     }
   ],
   "landscape": [
     {
-      "id": "garden-court",
+      "id": "lawn-north",
       "position": [
-        -98,
-        50
-      ],
-      "size": [
-        48,
-        34
-      ],
-      "kind": "garden"
-    },
-    {
-      "id": "garden-south",
-      "position": [
-        -151,
-        244
-      ],
-      "size": [
-        102,
-        26
-      ],
-      "kind": "green"
-    },
-    {
-      "id": "garden-west",
-      "position": [
-        -286,
-        124
+        -26,
+        -60
       ],
       "size": [
         24,
-        94
+        14
       ],
       "kind": "green"
+    },
+    {
+      "id": "plaza-north-court",
+      "position": [
+        14,
+        -40
+      ],
+      "size": [
+        22,
+        16
+      ],
+      "kind": "plaza"
     }
   ],
-  "surroundings": [
+  "water": [],
+  "parking": [
     {
-      "id": "context-east-01",
+      "id": "parking-northwest",
       "position": [
-        175,
-        56
+        -48,
+        -28
       ],
       "size": [
-        42,
-        32
+        28,
+        20
       ],
-      "height": 16
+      "rotation": 0
+    }
+  ],
+  "treeRows": [
+    {
+      "from": [
+        -150,
+        20
+      ],
+      "to": [
+        30,
+        -140
+      ],
+      "count": 16,
+      "offset": 8.5,
+      "jitter": 0.9
     },
     {
-      "id": "context-east-02",
-      "position": [
-        143,
-        158
+      "from": [
+        -150,
+        20
       ],
-      "size": [
-        46,
-        32
+      "to": [
+        30,
+        -140
       ],
-      "height": 14
+      "count": 16,
+      "offset": -8.5,
+      "jitter": 0.9
     },
     {
-      "id": "context-south",
-      "position": [
-        -28,
-        331
+      "from": [
+        30,
+        -140
       ],
-      "size": [
-        48,
-        34
+      "to": [
+        190,
+        -25
       ],
-      "height": 13
+      "count": 13,
+      "offset": 9,
+      "jitter": 0.9
+    },
+    {
+      "from": [
+        30,
+        -140
+      ],
+      "to": [
+        190,
+        -25
+      ],
+      "count": 13,
+      "offset": -9,
+      "jitter": 0.9
+    },
+    {
+      "from": [
+        190,
+        -25
+      ],
+      "to": [
+        -70,
+        145
+      ],
+      "count": 20,
+      "offset": 11,
+      "jitter": 1.1
+    },
+    {
+      "from": [
+        190,
+        -25
+      ],
+      "to": [
+        -70,
+        145
+      ],
+      "count": 20,
+      "offset": -11,
+      "jitter": 1.1
+    },
+    {
+      "from": [
+        -70,
+        145
+      ],
+      "to": [
+        -150,
+        20
+      ],
+      "count": 11,
+      "offset": 8,
+      "jitter": 0.9
+    },
+    {
+      "from": [
+        -70,
+        145
+      ],
+      "to": [
+        -150,
+        20
+      ],
+      "count": 11,
+      "offset": -8,
+      "jitter": 0.9
+    },
+    {
+      "from": [
+        -44,
+        82
+      ],
+      "to": [
+        26,
+        76
+      ],
+      "count": 6,
+      "offset": 0,
+      "jitter": 1.4
+    },
+    {
+      "from": [
+        -46,
+        50
+      ],
+      "to": [
+        16,
+        50
+      ],
+      "count": 6,
+      "offset": 0,
+      "jitter": 1.6
     }
   ],
   "treePositions": [
     [
-      -293,
-      87
+      -30,
+      30
     ],
     [
-      -275,
-      116
+      10,
+      40
     ],
     [
-      -252,
-      184
+      -10,
+      22
     ],
     [
-      -205,
-      234
+      20,
+      45
     ],
     [
-      -155,
-      272
+      0,
+      -14
     ],
     [
-      -89,
-      264
+      -30,
+      -14
     ],
     [
-      -42,
-      227
+      64,
+      10
     ],
     [
-      -25,
-      184
+      60,
+      40
     ],
     [
-      -75,
-      144
+      -70,
+      10
     ],
     [
-      -99,
-      122
+      -104,
+      4
     ],
     [
-      -109,
-      80
+      30,
+      -34
     ],
     [
-      -139,
-      43
+      -20,
+      30
     ],
     [
-      -196,
-      14
+      80,
+      20
     ],
     [
-      -258,
-      -41
+      40,
+      70
     ],
     [
-      -303,
-      -12
+      -50,
+      70
     ],
     [
-      -327,
-      32
+      15,
+      60
+    ],
+    [
+      -90,
+      62
+    ],
+    [
+      100,
+      -60
+    ],
+    [
+      -24,
+      -34
+    ],
+    [
+      46,
+      -40
     ]
   ]
 }

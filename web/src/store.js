@@ -5,6 +5,8 @@ export class TwinStore extends EventTarget {
       view: "site",
       floorId: "f07",
       activeRoomId: null,
+      activeDeviceId: null,
+      patrolPaused: false,
       mode: "3d",
       selected: { kind: "floor", id: "building-06-f07", title: "6号楼 · 7楼" },
       layers: { spaces: true, equipment: true, alerts: true, heat: false },
@@ -13,6 +15,7 @@ export class TwinStore extends EventTarget {
       campusLayout: null,
       floorplan: null,
       summary: null,
+      alerts: [],
       telemetry: new Map(),
     };
   }

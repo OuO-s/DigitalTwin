@@ -1,0 +1,46 @@
+{
+  "rules": [
+    {
+      "id": "meeting-humidity-high",
+      "name": "会议室湿度偏高",
+      "twinId": "eq-sensor-01",
+      "field": "humidity",
+      "op": "gt",
+      "threshold": 68,
+      "level": "warning",
+      "for": 4,
+      "message": "湿度 {value}%RH 高于 {threshold}%RH"
+    },
+    {
+      "id": "hvac-temp-high",
+      "name": "空调温度偏高",
+      "twinId": "eq-hvac-01",
+      "field": "temperature",
+      "op": "gt",
+      "threshold": 27,
+      "level": "warning",
+      "for": 5,
+      "message": "温度 {value}℃ 高于 {threshold}℃"
+    },
+    {
+      "id": "battery-low",
+      "name": "设备电量低",
+      "twinId": "*",
+      "field": "battery",
+      "op": "lt",
+      "threshold": 25,
+      "level": "warning",
+      "for": 3,
+      "message": "电量 {value}% 低于 {threshold}%"
+    },
+    {
+      "id": "device-offline",
+      "name": "设备离线",
+      "twinId": "*",
+      "field": "@offline",
+      "threshold": 12,
+      "level": "critical",
+      "message": "已 {value} 秒没有数据上报"
+    }
+  ]
+}

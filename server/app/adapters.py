@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import math
 import random
 import time
 from abc import ABC, abstractmethod
@@ -8,7 +9,16 @@ from abc import ABC, abstractmethod
 
 class ProtocolAdapter(ABC):
     @abstractmethod
-    async def start(self, publish): ...
+    async def connect(self, publish): ...
+
+    @abstractmethod
+    def subscribe(self, device_list=None): ...
+
+    @abstractmethod
+    def normalize(self, raw): ...
+
+    @abstractmethod
+    async def send_command(self, device_id, command): ...
 
     @abstractmethod
     async def stop(self): ...
@@ -21,8 +31,9 @@ class DemoAdapter(ProtocolAdapter):
         self._task: asyncio.Task | None = None
         self._running = False
         self._temperature = 23.4
+        self._started = time.monotonic()
 
-    async def start(self, publish):
+    async def connect(self, publish):
         if self._task and not self._task.done():
             return
         self._running = True
@@ -34,11 +45,26 @@ class DemoAdapter(ProtocolAdapter):
                     "twinId": "eq-hvac-01",
                     "type": "status",
                     "ts": int(time.time() * 1000),
-                    "payload": {"status": "online", "temperature": round(self._temperature, 1), "source": "demo"},
+                    "payload": {"state": "online", "temperature": round(self._temperature, 1), "source": "demo"},
+                })
+                await publish({
+                    "twinId": "eq-sensor-01",
+                    "type": "status",
+                    "ts": int(time.time() * 1000),
+                    "payload": {"state": "online", "humidity": round(69 + 2 * math.sin((time.monotonic() - self._started) / 8), 1), "source": "demo"},
                 })
                 await asyncio.sleep(4)
 
         self._task = asyncio.create_task(loop())
+
+    def subscribe(self, device_list=None):
+        return []
+
+    def normalize(self, raw):
+        return raw
+
+    async def send_command(self, device_id, command):
+        return {"ok": False, "err": "演示适配器不下发指令"}
 
     async def stop(self):
         self._running = False
@@ -48,19 +74,3 @@ class DemoAdapter(ProtocolAdapter):
                 await self._task
             except asyncio.CancelledError:
                 pass
-
-
-class MqttAdapter(ProtocolAdapter):
-    """生产适配器接口占位；broker 地址和凭据由部署环境配置。"""
-
-    def __init__(self, broker_url: str | None = None):
-        self.broker_url = broker_url
-
-    async def start(self, publish):
-        # 订阅 twin/+/pose|joint|status|ack，并从主题解析 twinId/type。
-        # 运行环境安装 paho-mqtt 后在此接入外部 EMQX/Mosquitto。
-        return None
-
-    async def stop(self):
-        return None
-

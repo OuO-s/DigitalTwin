@@ -4,9 +4,11 @@ __pycache__/
 .venv/
 venv/
 data/*.sqlite3
+data/*.sqlite3-*
 41623359423-1-192.mp4
 .tmp/
 .wheels/
 .pylibs/
+.playwright-cli/
 
 web/assets/maps/

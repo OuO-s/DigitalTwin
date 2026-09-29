@@ -10,6 +10,8 @@ FLOORPLAN_PATH = ASSETS / "floorplans" / "building-06-f07.json"
 CAMPUS_LAYOUT_PATH = ASSETS / "campus-layout.json"
 DATA_DIR = ROOT / "data"
 DB_PATH = DATA_DIR / "twin.sqlite3"
+ALERT_DB_PATH = DATA_DIR / "alerts.sqlite3"
+ALERT_RULES_PATH = ASSETS / "alert-rules.json"
 
 
 def read_json(path: Path) -> dict:

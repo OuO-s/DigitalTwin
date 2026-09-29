@@ -16,18 +16,18 @@
         7
       ],
       "footprintMeters": [
-        44,
-        31
+        58,
+        29
       ],
       "name": "6号楼",
-      "positionSource": "用户红圈卫星图确认：三期东北侧、交叉口西南侧；本地场景以6号楼为原点，绝对坐标仍待测量",
+      "positionSource": "用户 2026-09 红框标注卫星图：园区东南侧、临南侧大道；本地场景以七栋楼群几何中心为原点，绝对坐标仍待测量",
       "centerOffsetMeters": [
-        0,
-        0
+        91,
+        -31
       ],
       "id": "building-06",
       "floorCount": 8,
-      "modelAccuracy": "示意模型，非测绘轮廓"
+      "modelAccuracy": "屋顶轮廓按标注影像量取，非测绘轮廓"
     }
   ]
 }

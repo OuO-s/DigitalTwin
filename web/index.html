@@ -28,14 +28,13 @@
       <div class="top-spacer"></div>
       <div class="connection"><span class="pulse"></span><span id="connection-label">演示数据已连接</span></div>
       <div class="top-date"><span id="clock">09:41:08</span><small>2026.09.24 周四</small></div>
-      <button class="avatar" title="演示账户">知</button>
     </header>
 
     <aside class="left-rail">
       <div class="rail-caption">工作台</div>
       <button class="rail-item active" data-section="space"><span class="rail-icon">⌘</span><span>空间总览</span></button>
       <button class="rail-item" data-section="assets"><span class="rail-icon">▦</span><span>资产设备</span><em>07</em></button>
-      <button class="rail-item" data-section="alerts"><span class="rail-icon">◉</span><span>告警中心</span><em class="warn-dot">1</em></button>
+      <button class="rail-item" data-section="alerts"><span class="rail-icon">◉</span><span>告警中心</span><em class="warn-dot" id="alert-badge" hidden>0</em></button>
       <div class="rail-bottom"><div class="rail-caption">站点</div><div class="site-badge"><span class="site-pin">⌖</span><span>临港<br><b>智萃中心</b></span></div><div class="rail-version">空间引擎 <span>v0.1.0</span></div></div>
     </aside>
 
@@ -70,6 +69,24 @@
           </div>
         </div>
         <div class="room-directory" id="room-directory" hidden></div>
+        <aside class="room-detail-panel" id="room-detail-panel" aria-live="polite" hidden></aside>
+        <button class="patrol-entry" id="patrol-open" type="button" hidden><i></i>巡检机器人 <span>ROBOT-01 ↗</span></button>
+        <div class="selection-marker" id="selection-marker" aria-hidden="true" hidden>
+          <i></i><span><b></b><small></small></span>
+        </div>
+        <aside class="patrol-panel" id="patrol-panel" aria-live="polite" hidden>
+          <div class="patrol-panel-head">
+            <div><span class="section-kicker">7F PATROL · ROBOT-01</span><h2>楼层巡逻机器人</h2></div>
+            <button id="patrol-panel-close" aria-label="关闭机器人面板">✕</button>
+          </div>
+          <div class="patrol-panel-subtitle"><i></i><span id="patrol-state-label">正在巡逻</span><span>7楼中央通道</span></div>
+          <div class="patrol-stats">
+            <div><small>当前电量</small><b>92<em>%</em></b><span class="battery-track"><i></i></span></div>
+            <div><small>巡逻速度</small><b id="patrol-speed">1.5<em> m/s</em></b></div>
+          </div>
+          <button class="patrol-toggle" id="patrol-toggle"><span>Ⅱ</span><b>暂停巡逻</b></button>
+          <div class="patrol-panel-foot"><span>ROUTE STATUS</span><b><i></i><span id="patrol-route-label">路线运行中</span></b></div>
+        </aside>
         <div class="scene-location"><span class="location-cross">⌖</span><div><b>6号楼 · 7F</b><small>三期东北侧 · 用户标注校准</small></div></div>
         <div class="scene-legend"><span><i class="legend-room"></i>空间</span><span><i class="legend-equipment"></i>设备</span><span><i class="legend-alert"></i>异常</span><span><i class="legend-heat"></i>热度</span></div>
         <div class="scene-zoom"><button id="zoom-in" aria-label="放大">＋</button><span></span><button id="zoom-out" aria-label="缩小">−</button></div>
@@ -107,18 +124,23 @@
         </section>
 
         <section class="panel-section equipment-section">
-          <div class="section-head"><div><span class="section-kicker">ASSET STATUS</span><h2>设备状态 <small id="equipment-count">07</small></h2></div><button class="text-link compact" data-section="assets">查看全部 <span>→</span></button></div>
+          <div class="section-head"><div><span class="section-kicker">ASSET STATUS</span><h2>设备状态 <small id="equipment-count">07</small></h2></div><button class="text-link compact" id="toggle-all-assets" data-section="assets" aria-expanded="false">查看全部 <span>→</span></button></div>
           <div class="device-list" id="device-list"></div>
         </section>
 
         <section class="panel-section alerts-section">
-          <div class="section-head"><div><span class="section-kicker">ATTENTION</span><h2>告警与事件 <small class="alert-count" id="alert-count">01</small></h2></div><button class="text-link compact" data-section="alerts">全部 <span>→</span></button></div>
+          <div class="section-head"><div><span class="section-kicker">ATTENTION</span><h2>告警与事件 <small class="alert-count" id="alert-count">00</small></h2></div><button class="text-link compact" data-section="alerts">全部 <span>→</span></button></div>
           <div class="alert-list" id="alert-list"></div>
         </section>
       </div>
       <footer class="panel-footer"><span class="footer-live"><i></i>实时状态</span><span>更新时间 <b id="updated-at">09:41:08</b></span></footer>
     </aside>
   </div>
+  <aside class="alert-drawer" id="alert-drawer" aria-label="告警中心" aria-hidden="true">
+    <div class="alert-drawer-head"><div><small>ALERT CENTER</small><h2>告警中心</h2></div><button id="alert-close" aria-label="关闭告警中心">✕</button></div>
+    <nav class="alert-tabs" aria-label="告警页面"><button class="active" data-alert-tab="active">进行中</button><button data-alert-tab="history">历史</button><button data-alert-tab="report">报表</button></nav>
+    <div class="alert-drawer-body" id="alert-drawer-body"></div>
+  </aside>
   <div class="toast" id="toast"></div>
   <script type="module" src="./src/main.js"></script>
 </body>

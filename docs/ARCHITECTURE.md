@@ -15,6 +15,7 @@ Three.js 园区/楼层场景 ◀── TwinStore ──── REST / WebSocket
 - `server/assets/site.json` 保存园区名称、用户给出的 WGS84 参考点及 6 号楼的场景偏移与配准来源。
 - `server/assets/campus-layout.json` 保存米制的目标七栋楼、风雨连廊、道路、绿地、水景和步道。场景由 Three.js 网格重新绘制，不加载实景瓦片或底图。
 - `server/assets/floorplans/building-06-f07.json` 保存毫米制房间与设备位置，可由实测 CAD/IFC 转换数据替换。
+- 同一楼层文件中的 `patrolRoute` 定义巡检机器人 `robot-01` 的路线和速度；机器人演示区的 `eq-robot-01` 属于 `equipments`，是另一台人形服务机器人。前端 `TwinStore` 保存巡逻暂停状态，`TwinScene` 按帧更新位置和选中标识。具体交互见 [楼层场景交互](SCENE_INTERACTION.md)。
 - 园区空间布局按用户红框标注的卫星图逐栋重绘：七栋楼被四条道路围合，楼栋由一层高的风雨连廊连接。局部原点取七栋楼群几何中心，比例尺约 0.34 米/像素，由 6 号楼 7 层手绘图轮廓反算。绝对坐标、楼号与实测轮廓仍需总图/GPS 复核（见 `CALIBRATION.md`）。
 
 ## 窄腰契约
@@ -29,10 +30,10 @@ Three.js 园区/楼层场景 ◀── TwinStore ──── REST / WebSocket
 
 部署边界、现有能力与生产化待办见 [部署约束与生产化清单](DEPLOYMENT_CONSTRAINTS.md)。
 
-MQTT 故障信号与业务告警分别见 [MQTT 接入与故障提示](MQTT_INTEGRATION.md)和 [告警引擎](ALERTS.md)；平台角色、会话和设备令牌见 [用户权限与设备令牌](AUTH.md)。
+MQTT 故障信号与业务告警分别见 [MQTT 接入与故障提示](MQTT_INTEGRATION.md)和 [告警引擎](ALERTS.md)。
 
 ## 后续生产接入
 
 1. 用园区总平面、楼栋实测坐标和 7 楼 CAD/IFC 替换示意配置。
 2. 在外部 Broker 配置设备身份认证、主题 ACL 与 TLS，并核对现场协议。
-3. 为现有告警规则增加在线编辑与多进程扫描协调；扩展历史回放，并在现有 `viewer/operator/admin` 角色基础上实现按设备授权和指令审计。
+3. 为现有告警规则增加在线编辑与多进程扫描协调；扩展历史回放，并在接入真实设备前实现按设备授权和指令审计。

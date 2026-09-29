@@ -1,0 +1,9 @@
+# 本机联调专用的独立 Broker；正式环境应配置 TLS、账号和 ACL。
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    ports:
+      - "127.0.0.1:1883:1883"
+    volumes:
+      - ./deploy/mosquitto/mosquitto.dev.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped

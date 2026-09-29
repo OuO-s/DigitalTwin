@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "twin_message_schema.json",
+  "title": "智萃空间统一孪生消息",
+  "description": "主题提供 twinId/type；MQTT 负载只含业务字段和可选 ts。适配器归一化后进入 Hub，WebSocket 保持 payload 字段。",
+  "definitions": {
+    "ts": { "type": "integer", "description": "毫秒时间戳" },
+    "pose": {
+      "type": "object",
+      "required": ["x", "y", "z", "yaw", "roll", "pitch"],
+      "properties": {
+        "x": { "type": "number" }, "y": { "type": "number" }, "z": { "type": "number" },
+        "yaw": { "type": "number" }, "roll": { "type": "number" }, "pitch": { "type": "number" }
+      }
+    },
+    "joint": {
+      "type": "object", "required": ["joints"],
+      "properties": { "joints": { "type": "array", "items": { "type": "number" } } }
+    },
+    "status": {
+      "type": "object", "required": ["state"],
+      "properties": { "state": { "type": "string" } }, "additionalProperties": true
+    },
+    "ack": {
+      "type": "object", "required": ["ref", "ok"],
+      "properties": {
+        "ref": { "type": "string" }, "ok": { "type": "boolean" },
+        "err": { "type": ["string", "null"] }, "cmd": { "type": "string" }
+      }, "additionalProperties": true
+    },
+    "command": {
+      "type": "object", "required": ["cmd", "id"],
+      "properties": { "cmd": { "type": "string" }, "id": { "type": "string" }, "ts": { "$ref": "#/definitions/ts" } },
+      "additionalProperties": true
+    }
+  },
+  "oneOf": [
+    { "type": "object", "required": ["twinId", "type", "ts", "payload"], "properties": { "twinId": { "type": "string" }, "type": { "const": "pose" }, "ts": { "$ref": "#/definitions/ts" }, "payload": { "$ref": "#/definitions/pose" } } },
+    { "type": "object", "required": ["twinId", "type", "ts", "payload"], "properties": { "twinId": { "type": "string" }, "type": { "const": "joint" }, "ts": { "$ref": "#/definitions/ts" }, "payload": { "$ref": "#/definitions/joint" } } },
+    { "type": "object", "required": ["twinId", "type", "ts", "payload"], "properties": { "twinId": { "type": "string" }, "type": { "const": "status" }, "ts": { "$ref": "#/definitions/ts" }, "payload": { "$ref": "#/definitions/status" } } },
+    { "type": "object", "required": ["twinId", "type", "ts", "payload"], "properties": { "twinId": { "type": "string" }, "type": { "const": "ack" }, "ts": { "$ref": "#/definitions/ts" }, "payload": { "$ref": "#/definitions/ack" } } },
+    { "type": "object", "required": ["twinId", "type", "payload"], "properties": { "twinId": { "type": "string" }, "type": { "const": "command" }, "payload": { "$ref": "#/definitions/command" } } }
+  ]
+}
